@@ -1,0 +1,623 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.25in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumerate}
+\usepackage{amssymb}
+\usepackage{amsthm}% http://ctan.org/pkg/amsthm
+\usepackage{etoolbox}% http://ctan.org/pkg/etoolbox
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage[parfill]{parskip}
+\usepackage{algpseudocode}
+\usetikzlibrary{automata}
+\usetikzlibrary{backgrounds}
+\tikzset{>=stealth}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+\usepackage{amsmath,amsthm,amscd}
+\usepackage{hyperref,psfrag}
+\usepackage{a4wide}
+\usepackage{hyperref}
+\usepackage{appendix}
+\usepackage{titlepic}
+\usepackage{listings}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\newcommand{\pd}{\partial} 
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{titlesec}
+% FSM GENERATOR:
+% https://www.cefns.nau.edu/~edo/Classes/CS315_WWW/Tools/fsm.html
+\newcommand*{\QED}{\hfill\ensuremath{\blacksquare}} 
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\title{	
+    {ASEN6023 Notes}\\
+    {\hspace{1cm}}\\
+	{\begin{figure}[!htbp]\centering\includegraphics[scale= 0.65]{boulderlogo.jpg}\end{figure}}
+    }
+\date{January 15, 2019}
+\author{\href{mailto:padraig.lysandrou@colorado.edu}{Padraig Lysandrou}}
+
+\pagestyle{fancy}
+\lhead{Nonlinear Control Theory}
+\rhead{Lysandrou}
+\begin{document}
+
+\maketitle
+\newpage
+\section*{January 15th, 2018}
+There are 3 exams -- 30\% each, and all take home exams. The Homework is 10\%. OH is on Tuesdays 3-4pm
+
+We can think of a system as a simple relationship between two signals, the input u and the output y. Linearity assumes the satisfaction of the superposition principle. Therefore the function $y=F(u,x_0)$, this means that $f(u_1+u_2,x_0) = f(u_1)+f(u_2) \quad \forall u_1 u_2$. We can similarly write this as the summation of two initial conditions $\forall x_1(0) x_2(0)$. When you think about it, most systems are not truly linearly. But, these things can be approximately true over a wide variety of signals. These are linear regions. When we design a controller, we usually take linear approach first. There exist many powerful design techniques, which work 80\% the time. This leads you to understanding what nonlinearities give you trouble, to motivate your nonlinear techniques. Don't waste time by jumping into a nonlinear approach off the bat. 
+
+Let's focus on the state system point of view now, for $\dot{x} = f(x,u) = f(x) + g(u)$. Which we know can be $\dot{x} = Ax + Bu$ as a standard linear system, from a state space point of view. 
+
+Where do nonlinearities come from?  Well to pick a proper control, changing indirectly the state of the system, we must understand the body dynamics. The plant itself may be the nonlinear factor. It could also be in the control: saturation in poeration current of actuators, mechanism motion limits, ADC ranges, powere amplifier slew rate limits, trigonometric nonlienarities, etc. They can also come from non-ideologies; assuming ideal systems. Sensors can also be nonlinear. Of course, many times we want to introduce nonlinearities to get a specific behaviour. 
+
+Example: shape memory alloy. They have a hysteresis in the relationship between stress and strain. But these are all smooth differentiable curves. But there are plenty of non-diff systems: like friction. Example: stiction. There are discrete friction transitions from static to dynamic friction. "Coulombic" friction an example of one. Example: quantization error. The ADC will be noncontinuous and chops up analog signals. This is the same way with DACs on the output. 
+
+Robotic arm dynamics are nonlinear due to trigonometric linkage setups and the moment of inertia changes over time. These are dynamic linearities. For $\Theta = [ \theta_1 \theta_2 \theta_3 ]^T$, dynamics is in the form $M(\theta)\ddot{\theta} + S(\theta,\dot{\theta}) + G(\theta) = [\tau_1 \tau_2 \tau_3]^T$. The M and S variable are the nonlinear components of the dynamics. G is often trigonometric. Mode switching logic gives you hybrid control systems. On-off switching amplifiers, like those driven by PWM, are nonlinear (NL) systems.
+
+Let's say that the NL are bad: assume they are not there, get rid of them, or dominate them. The second means canceling the NL dynamics with a NL controller. High gains to dominate NLs; but these might not be feasible. If NL are good: design to produce a desired NL behaviour. If they are indifferent, then just design to produce good behaviour. 
+
+Homework: read Khalil Ch1,2 and Hw 1 assigned next week.
+
+
+
+\section*{January 17th, 2018}
+Characterization of Linear systems: spoke about superposition wrt inputs and states. Recall that we can write the solution of a linear system $\dot{x}(t)= Ax(t) + Bu(t)$ with solution $x(t) = e^{A(t-t_0)}x(t_0) + \int_{t_0}^t e^{A(t-\tau)}Bu(\tau)d\tau$ where the latter is teh convolution integral of the input function with the impulse response. These are the forced response to the inputs. And let us recall that the matrix exponential is an infinite Peano Baker power series, and the natural response of the system.
+
+Checking the superposition property with two inputs should be a simple sum of the two. Therefore $\int_{t_0}^t e^{A(t-\tau)}B(u_1 + u_2)d\tau = \int_{t_0}^t e^{A(t-\tau)}Bu_1(\tau)d\tau + \int_{t_0}^t e^{A(t-\tau)}Bu_2(\tau)d\tau$. 
+
+Natural responses are exponential for linear systems. So $x(t) = e^{A(t-t_0)}x(t_0)$. And the scalar form $e^{at}$ has a similar infinite series description. We can break the matrix form down into modal componenets. If A is semi-simple $T^{-1}AT=diag\{\lambda_i(A)\}$. The property of semi-simple are robust to perturbation so that $A+\delta A$ acts similar to A. 
+
+$\dot{x} = Ax$ for $x = Tv$ then we see that $T\dot{v} = ATv$ therefore $\dot{v} = T^{-1}ATv$ which decouples the system completely where $T^{-1}AT$ acts as a diagonal eigenvalue matrix. Therefore $\dot{v}_i = \lambda_iv_i$ has the solution $v_i(t) = e^{\lambda_i t}v_i(0)$. The columns of T, $T_i$ are eigenvectors. So for $\dot{x}=Ax$ we know that $AT_i = \lambda_iT_i$ therefore $T_i$ is an invariant basis. So if you start with $x=T_i$, by operatitng with A, you will stay in the same direction, it evolves with the behavior of $e^{\lambda_1t}$. Or $T_i$ is an invariant set of the operator A. 
+
+We see that positive $\lambda$ values blow up and negative $\lambda$ values decay to zero. Complex $\lambda$ values, $e^{\lambda_i} = e^{\sigma_it}e^{j\omega_i t}$ which encode oscillatory behaviour, and so the eigenvector is complex. Of coursee the complex values come in pairs. The combination of the two eigensolutions create a real solution together. Conjugate twins satisfy symmetry of $AT_i = \lambda_iT_i$ has pair $AT_i^* = \lambda_i^*T_i^*$. Seeing them in a complex plane shows that for $\sigma=0$ we get closed orbits. The origin in this situation is neutrally stable. For $\sigma>0$ you will spiral out, and for $\sigma<0$ you spiral to the origin. Other conjugate pairs (so 4 $\lambda$s) will create another complex subspace having its own behaviour.One real $\lambda$ with a conjugate pair $\lambda$ will create a line and a complex plane. 
+
+The frequency domain overview is also important. Linear systems do not skew the input frequency, this is not true for NL systems.
+
+Limit sets in linear systems are either equilibria or periodic orbits. Example, $\dot{x} = Ax = f(x) = 0$ for equilibria. All linear systems have an equilibrium at the origin. The nullspaces are also the equilibria, this could be a whole subspace. Therefore you cannot have an individual equilibrium, it must be connected to the origin with a subspace. This is true for $\lambda$ values equal to zero. Otherwise this is not true, only equilibrium is the origin. The $\omega$ limit points p: $x(t_i)$ converges to point p where $t_i$ is an infinite sequence. So if a state trajectory converges to this point, it is an $\omega$ limit point. So an $\omega$ limit set is the set of all such points $p$ where this is true. Therefore everything on a periodic orbit has an infinite number of points, or solutions. "Points that you visit infinitely often!" The book calls these "positive" limit points/sets. $\alpha$ limit sets are considered negative, so in backwards recursed time. For unstable systems, in backwards time it converges to the origin. Hyperbolic equilibrium for linear systems: the real part of the eigenvalues of A are negative: $Re(\lambda_i(A))<0 \quad \forall i$. In this situation, for no zero values of $\lambda$, $p=0$ is the only $\omega$ limit point. For $Re(\lambda_i(A))>0 \quad \forall i$, $p=0$ is the only $\alpha$ limit point. For a mix of the two, without any $\lambda =0$ we will have the same equilibrium point forward or backward in time, so therefore both an $\alpha$ and $\omega$ limit point. Linearization does not destroy behaviour of the hyperbolic from NL systems.
+
+We also have a "center-equilibrium" where $Re(\lambda_i(A))=0$ for some $i$, the system has a center equilibrium or center manifold. Therefore it can have entire subspaces of equilibria and periodic orbits. Linearization may destroy this behaviour.
+
+
+\section*{January 22nd}
+Previously we spoke about phase portraits and the invariant spaces that eigenspaces created on those portraits. He defines the eigenspace as invariant under the dynamics. We can also call these sub-manifolds of the state space. These invariant sets are "flat," or scale invariant. Anything in the nullspace of A is in equilibrium, which only happens if $\lambda = 0$. 
+
+Stable manifold is a set of states that go to the equilibrium as $t \to \inf$. Unstable manifolds are a set of states that go to equilibrium as $t \to -\inf$. Therefore for the phase portrait (phase planes are when the axes are derivatives of each other) lines that describe $\lambda < 0$, this line is a stable manifold. The origin, in the case for a single positive and negative eigenvalue, is in both the stable and unstable manifold sets. For complex eigenvalues with zero real value, you orbit the equilibrium.
+
+For looking at stability, we must ask "what happens in the neighborhood of the equilibrium points?" Lyapunov stability, coming later, is described in a more concrete manner. sStability of an equilibrium can be "transferred" to studying the stability of the whole system (or whole state space). In linear systems, equilibrium stability is a global property. This is not true for nonlinear systems.
+
+For systems with large number of eigenvalues, we cannot just look at portraits. So lets look at all of the eigenvectors. We group conjugate terms; either there are first order or second order sub-eigenspaces which describe simple behaviour.
+
+For a mass spring damper system with an external force: $f_{net} =  f_{ext} - k(d-l_0) -B\dot{d}$. Let us define that $\delta d = d-l_0$, and $\dot{\delta}=\dot{d}$, $\ddot{\delta}=\ddot{d}$. We can then write that $f_{ext} = m\delta\ddot{d} + B\delta \dot{d} + K \delta d$. We can write in state space such that $x = [\delta d \quad \delta \dot{d}]^T = [x_1 \quad x_2]^T$, and then $\dot{x} = Ax + [0 \quad \frac{1}{m}]^Tf_{ext}$ for 
+
+\begin{equation}
+A=
+\begin{bmatrix}
+0 &1 \\
+-\frac{k}{m} &\frac{-B}{m}
+\end{bmatrix}
+\end{equation}
+
+And of course it must be the case that $A\bar{v} = \lambda \bar{v}$ so then $(A-\lambda I)\bar{v} = \bar{0}$ therefore, $det(A-\lambda I) = 0$. For the MSD system, the determinant yields a charateristic polynomial $\lambda^2 + \frac{B}{m}\lambda + \frac{K}{m}=0$ which has its roots as the $\lambda$s of the system. We can then symbolically solve for each eigenvector.
+
+Sometimes with repeated roots you get non-semisimple cases. He then shows MATLAB simulations.
+
+He lists the single equilibrium: node (real eigenvalues, same sign), saddle (real eigenvalues opposite sign), focus (complex eigenvalues), center (nonzero imaginary eigenvalues).
+
+He lists distributed equilibria: center (zero eigenvalues).
+
+
+
+\section*{January 24th}
+Again we recall our linear system of form $\dot{x} = Ax + Bu = f(x,u)$ with solution $x(t) = e^{\lambda t}x_0$. Let us say that we have some initial, nominal solution such that $\dot{x}_0 = Ax_0 + Bu_0$; we want to perturb the dynamics about this nominal condition by a small amount. Let's expand $\dot{x} = f(x,u)$ about the nominal condition with a Taylor series: $\dot{x} = f(x_0,u_0) + Df_x \lvert_{x_0 , u_0} \delta x + Df_u \lvert_{x_0 , u_0} \delta u + HOT =  \dot{x}_0 + \delta \dot{x}$ but we know that the derivative of the initial condition is zero, so then it is just $\delta\dot{x}$. We know that the partial matrices are just the Jacobian matrices A and B for each. So we say that $Df_x = A$ and $Df_u = B$. Therefore, the deviations have the same form as the original: $\dot{\delta x} = A \delta x + B \delta u$.
+
+Holmes Equation: 
+
+\begin{equation}
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2
+\end{bmatrix}
+ = 
+\begin{bmatrix}
+\zeta x_1 - \delta x_2 + x_1x_2 \\
+\delta x_1 -\zeta x_2 + \frac{1}{2}(x_1^2 + x_2^2)
+\end{bmatrix}
+\end{equation}
+
+Recall that the equilibrium are the origin and the nullspace of A. Here we don't have A, so don't have that to work off of. We do have an equilibrium at the origin obviously. We have that $0=\zeta x_1 - \delta x_2 + x_1x_2 $ and that $0=\delta x_1 -\zeta x_2 + \frac{1}{2}(x_1^2 + x_2^2)$. Let us take that $\zeta = 0$ for now (as a special case). In this situation we have that $x_2(x_1 - \delta)$ and $0=\delta x_1 + \frac{1}{2}(x_1^2 + x_2^2)$. In this situation it must be that $x_2 = 0$ and $x_1 = 0 \quad x_1 = -2\delta$. Lets say that $x_1 = \delta$, then we have that $\frac{3}{2}\delta^2 = \frac{1}{2}x_2^2$ so then $x_2 = \pm \sqrt{3}\delta$.
+
+Let's look at the equilibrium point that $x_1^\star = x_2^\star = 0$. So then we can look at the local deviation defined by $y = x - x^\star$. This system is an autonomous so we only have $\dot{x} = f(x) = f(x^\star) + Df_x\lvert_{x^\star}y + HOT$. We can then show that $\dot{y} = \dot{x} - dot{x^\star} = \dot{x} = Df_x\lvert_{x^\star}y$. Our Jacobian is the following
+
+\begin{equation}
+Df_x = 
+\begin{bmatrix}
+-\zeta + x_2 & -\delta +x_1 \\
+\delta + x_1 & -\zeta -x_2	
+\end{bmatrix}
+\bigg\lvert_{x^\star} = 	
+\begin{bmatrix}
+0 & -\delta \\
+\delta & 0
+\end{bmatrix}
+\end{equation}
+
+Therefore we can show that the linear system is as such 
+\begin{equation}
+\dot{y} = 
+\begin{bmatrix}
+0 & -\delta \\
+\delta & 0
+\end{bmatrix} y
+\end{equation}
+
+The eigenvalues are such that $\lambda^2 + \delta^2 = 0$. These are complex, therefore the origin is called a "center" as near to the origin, the system will orbit.
+
+In the other case where $x_1 = -2\delta$ we have that:
+
+\begin{equation}
+Df_x = 
+\begin{bmatrix}
+0 & -3\delta \\
+-\delta & 0
+\end{bmatrix}
+\end{equation}
+Which yields the characteristic polynomial $\lambda^2 - 3\delta^2$ therefore $\lambda = \pm \sqrt{3} \delta$. This is a saddle equilibrium. We want to look at the eigenvectors now to see the stable and unstable manifolds for this saddle. 
+
+\begin{equation}
+\begin{bmatrix}
+0 & -3\delta \\
+-\delta & 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\
+v_2
+\end{bmatrix} = 
+\pm \sqrt{3}\delta
+\begin{bmatrix}
+v_1 \\
+v_2
+\end{bmatrix}
+\end{equation}
+
+We can trivially solve this for the positive eigenvalue and see that $-3\delta v_2 = \sqrt{3}\delta v_1$ and $\delta v_1 = \sqrt{3}\delta v_2$ therefore $v_1 = \sqrt{3} \quad v_2 = -1$. This makes an unstable manifold. For the negative eigenversion, we get the opposite eigenvector, which is stable. We can use these vectors to look at the stability in the locale of the equilibrium point.
+
+Doing this similarly, we find the other equilibria to have saddle point dynamics with a stable and unstable mode. As you stray farther from these equilibrium points, the linearization behaviour cannot tell you the stability flows.
+
+The orbit center in this system is a heteroclinic orbit.c
+
+We picked $\zeta$ here. As you change this parameter the dynamics will change, and the stability properties will change. Sometimes this will cause the system to snap into a different behaviour, this is called a bifurcation.
+
+For $\zeta = -0.03$, the EQ points have changed slightly. But here we have an unstable focus where the real part of the eigenvalues is nonzero at the origin.
+
+For $\zeta = 0.174$, one of the EQ points disappear. There are now two close at the origin, making it a stable focus. There are still two saddles.
+
+
+
+
+\section*{January 29, 2019}
+Recall the holmes problem with a center, and nonlinear behaviour. Other types of equilibria: for a second order thing described by:
+
+
+\begin{equation}
+\begin{bmatrix}
+\dot{x_1} \\
+\dot{x_2}
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_2 -ax_2x_2 -bx_1^2\\
+-x_1x_2 -\frac{b}{2}x_2^2
+\end{bmatrix}
+\end{equation}
+
+We have the points such that $x_2^\star = x_2^\star = 0$ as equilibria, we get that $x_1^\star = \frac{-b}{2}x_2^\star$ and $x_2 ^\star = \frac{-1}{\frac{ab}{2} -\frac{b^3}{9}}$. In the case, we can write an A matrix and find that it has two 0 eigenvalues with a single eigenvector. This is a degenerate special case. Since the eigenvalue is zero, anywhere that is spanned by the eigenvector is an equilibrium. 
+
+For when $a = \frac{1}{2}\quad b=3$, we have that $x_1^\star = -0.25 \quad x_2^\star = 0.166$ we have that $\lambda _1 = 1.29 \quad \lambda_2 = -0.129$. This is a saddle point.
+
+Talks about semi-stable equilibrium, where approaching the point from one side is "stable" but from the other is "unstable." In this prior example, there is an unstable manifold between two points leadin back into a stable manifold. Linearization does not preserve the nonlinear behaviour. This happens when eigenvalues are zero! Homoclinic orbit because it revisits the same equilibrium point.
+
+For the case that:
+
+\begin{equation}
+\begin{bmatrix}
+\dot{x_1} \\
+\dot{x_2}
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 & 1 \\
+-1 & 0
+\end{bmatrix}
+\begin{bmatrix}
+{x_1} \\
+{x_2}
+\end{bmatrix}
+-
+\begin{bmatrix}
+0 \\
+\epsilon x_1^2 x_2
+\end{bmatrix}
+\end{equation}
+Here we only have one equilibrium at the origin. We have complex conjugate eigenvalues $\pm j$. This acts as a "center" which is a closed orbit. This is neutrally stable for a linearization. But his plots show that this does not properly convey the nonlinear behaviour as the orbit decays towards the center.
+
+Van der Pol oscillator: a famous example.
+
+\begin{equation}
+m\ddot{z} + zc(z^2-1)\dot{z} + kz =0	
+\end{equation}
+This is effectively a nonlinear damper. We see that there appears to be only one equilibrium at the origin. Let's linearize about the origin. We get that 
+
+
+\begin{equation}A = 
+\begin{bmatrix}
+0 & 1\\
+\frac{-k}{m} & \frac{2c}{m}
+\end{bmatrix}
+\end{equation}
+
+The eigenvalues evaluate to: $\lambda_{1,2} = \frac{c}{m}\pm j \sqrt{\frac{k}{m}}$. This has a real part. So about the equilibrium origin, it spirals out in an unstable fashion, according to our linear analysis. We see the proper nonlinear behaviour has a limit cycle. There exists a closed orbit at a specific orbit from the origin. This orbit is stable. This is a limit cycle. It is attractive to initial conditions in its neighborhood. This is not a center behaviour because it is not neutrally stable. 
+
+You want this behaviour if you are engineering an oscillator. Additionally, this is important for engineering locomotion. A limit cycle is basically an isolated periodic orbit. There is only one, while a center will have many in neighborhood.
+
+Rossler's Band: another example. This is a third order system that follows:
+\begin{equation}
+\begin{bmatrix}
+\dot{x_1} \\
+\dot{x_2} \\
+\dot{x_3}
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 & -1 & -1\\
+1 & 1 & 0 \\
+0 & 0 & -c
+\end{bmatrix}
+\begin{bmatrix}
+{x_1} \\
+{x_2} \\
+x_3
+\end{bmatrix}
++
+\begin{bmatrix}
+0 \\ 0\\ b+x_1x_3
+\end{bmatrix}
+\end{equation}
+
+For values $c=4 \quad b=2 \quad a =0.3891$ we have that there is an equilibrium at $x_2^\star = -x_3^\star \quad x_1^\star = ax_3^\star \quad x_3^\star = \frac{c}{2a} \pm \frac{1}{2a}\sqrt{c^2-4ab}$. These take values of $x_1^\star=3.79 \quad x_2^\star= -0.975 \quad x_3^\star$ for eigen structure that is $\lambda_1 = 0.335 \quad \lambda_{2,3}=-0.07\pm j3.27$. If you are on the complex plane you are stable; but this is knife edge. Any overshoot off the edge and you shoot off, so this equilibrium is unstable.
+
+The second equilibrium is at $x_1^\star = 0.21 \quad x_2^\star = -0.53 \quad x_3^\star=0.53$ with eigenvalues $\lambda_1 = -0.366 \quad \lambda_{2,3}=0.127\pm j0.98$.This is an unstable spiral, with a stable manifold that approaches it.
+
+There is no equilibrium at the origin in this case. Plotting this in 3D shows a potato chip structure that represents a band. This is a chaotic orbit. There are no closed orbits. There are some banded orbits or groupings, but no repetition. Turns out that you need at least three states to create chaos.
+
+
+
+
+
+\section*{January 31st} % (fold)
+\label{sec:jan31}
+Properties of NL ODEs: (1) solutions may not exist starting from some initial conditions. Example given: $\dot{x}=-x^{\frac{1}{2}}$, which is not defined on the vector field function plot for x values below 0 because it is complex. Another is $\dot{x} = -sgn(x)$. The phase plane plot is discontinuous at zero, and therefore not defined at zero. This function is not a continuously differentiable $C^1$ solution. It is however a $C^0$ solution. 
+
+Peano's theorem: if $f(x)$ is continuous at some $x_0$, then there exists at least one $C^1$ solution $x(t)$ to $\dot{x}=f(x)$ passing through $x_0$. There also might be other solutions starting from that point.
+
+Properties of NL ODEs: (2) solutions starting from some $x_0$ may not be unique. Example given: $\dot{x} = \mid x \mid^{\frac{1}{2}}$; solutions here are that $x(t) = \frac{1}{4}t^2,\quad 0$. This function is not continuously differentiable.  THM: if f(x) satisfies the Lipschitz condition $\mid f(x_1) - f(x_2)\mid < k\mid x_1 - x_2 \mid \quad \forall x_1,x_2$
+in the neighborhood of $x_0$, then $\dot{x} = f(x), \quad x(t_0) = x_0$ has a unique solution $x(t)$ passing through $x_0$ for t defined on a neighborhood of $t_0$. Basically around these initial state and time conditions, the system can go forward and backward smoothly. This is a stronger form of continuity. However, this allows some strange functions to be considered continuous that can be nasty. Example given $\sin(\frac{1}{x})$ which oscillates faster and faster towards the zero value. This is not uniformly continuously differentiable, but it is Lipschitz because it abides by the gain boundary.
+
+What if the RHS is not Lipschitz continuous? What can we say about the solutions? You can still have unique solutions but is not Lipschitz continuous. It only goes  one way.
+
+Properties of NL ODEs: (3) solutions may not exist for all time. Example given: $\dot{x} = 1+x^2$. Here the $k$ values for the neighborhood of the chosen $x_0$ will be different over the function. But this is still Lipschitz continuous. NOT uniformly Lipschitz continuous. A solution to this is $x(t)=\tan(t)$, which escapes in finite time. 
+
+Thm 3.2 in Khalil: if f(x) is uniformly Lipschitz continuous, the solution exists $\forall t$. This uniformly assumption means the same k holds $\forall x \in \mathbb{R}^n$. This prevents the finite time escape issues, if that is actually an issue.
+
+$f(x) \quad C^0 \Leftarrow$ Locally Lipschitz continuous $\Leftarrow$ uniformly Lipschitz is stronger. $C^1$ is stronger than Locally Lipschitz and implies locally Lipschitz. So $C^1 \Leftarrow$ uniformly $C^1$. A convex function has an unbounded slope, so is not technically $C^1$. See hand written notes for this to be clearer.
+
+Theorem (Hartman): If $Df\rvert_{x_0}$ has eigenvalues with nonzero real parts, then there exists a homeomorphism h defined on some neighborhood $U$ of $x_0$ mapping the nonlinear flow of $\dot{x} = f(x)$ to the linear flow $ \dot{\delta x} = Df\rvert_{x_0}\delta x$. This homeomorphism $h$ is continuous and an invertible process. Furthermore, the stable and unstable manifolds of $\dot{x} = f(x)$ about $x_0$ are tangent to the stable and unstable manifolds of $ \dot{\delta x} = Df\rvert_{x_0}\delta x$.
+
+Note: if $Df\rvert_{x_0}$ has eigenvalues with nonzero real parts, then $x_0$ is "hyperbolic."
+
+
+Limit cycles: a limit cycle is an isolated closed orbit. Isolated here means that there is some neighborhood of the orbit that has no other closed orbits in it. 
+
+Let us take:
+\begin{equation}
+\begin{bmatrix}
+\dot{x_1} \\
+\dot{x_2}
+\end{bmatrix}
+=
+\begin{bmatrix}
+x_2 \\
+-x_1
+\end{bmatrix}
+\end{equation}
+
+This is linear, and turns out that it is a center. This does have an orbiting type of vector field, but is it a limit cycle? We must look at the neighborhood. There are an infinite amount of options that can create a closed orbit. Every neighborhood has other closed orbits in it. This means that there is an implied convergence/divergence when talking about limit cycles. We can study this with the following:
+
+$\hat{n} \cdot f(x) >0 \rightarrow $ orbit radius increasing
+
+$\hat{n} \cdot f(x) <0 \rightarrow $ orbit radius decreasing
+
+$\hat{n} \cdot f(x) =0 \rightarrow $ closed orbit
+
+
+
+
+\section*{February 5th}
+More on limit cycles:
+Let's look at this system:
+\begin{equation}
+\begin{bmatrix}
+\dot{z} \\
+\ddot{z}
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 &1 \\
+-\frac{k}{m} &0
+\end{bmatrix}
+\begin{bmatrix}
+{z} \\
+\dot{z}
+\end{bmatrix}
++
+\begin{bmatrix}
+0 \\
+\frac{1}{m}
+\end{bmatrix}
+f_c
+\end{equation}
+
+This produces simple harmonic motion, but with friction, the circular motion will head to the origin. It is also sensitive to the initial conditions, and is NOT a limit cycle. We can make it one with feedback control, however.
+For $f_c = m(r^2 -z^2 - \dot{z}^2)\dot{z}$, which looks a little like a damper. The $r$ value encodes the orbit height we would like in the phase plane. If we are on the circle, this will go to zero. If we are inside the circle, the force will be positive and push the system out. The converse is true for being outside the circle. This simple feedback law would create a limit cycle in the system dynamics.
+
+Let's take another circle with radius $R$, the outward normal inline with radius $n_c = [z \quad \dot{z}]^T$. We can write the dynamics as 
+
+
+\begin{equation}
+\begin{bmatrix}
+\dot{z} \\
+\ddot{z}
+\end{bmatrix}
+= f(z,\dot{z}) = 
+\begin{bmatrix}
+f_1(z,\dot{z}) \\
+f_2(z,\ddot{z})
+\end{bmatrix}
+\end{equation}
+
+And $f \cdot n_c = f_1n_1 + f_2n_2 = z\dot{z} + (-z+(r^2-z^2-\dot{z}^2)\dot{z})\dot{z} = \dot{z}^2(r^2 - z^2 -\dot{z}^2)$. This value is positive when $R^2 < r^2$, negative when $R^2 > r^2$, and 0 when you are on the orbit so $R^2 = r^2$.
+
+This creates an annulus about the stable orbit that pushes everything towards that closed orbit. This is called a "positively invariant set" .. also closed, bounded, compact. The flows cannot cross each other in this region, (non-unique), they must swirl around. This implies that the region, bounded by $R_1<R<R_2$ contains a closed orbit or an equilibrium. If there is not an equilbrium point, this implies that there exists a closed orbit. We can look at the Poincare Bendixson theorem. 
+
+
+REST OF NOTES ON PAPER! COMPUTER DIED 
+
+\section*{February 7th}
+
+For the weak non-linearity
+
+\begin{equation}
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2
+\end{bmatrix} =
+\begin{bmatrix}
+0 &1 \\
+-1 &0
+\end{bmatrix}
+\begin{bmatrix}
+x_1 \\
+x_2
+\end{bmatrix}-\begin{bmatrix}
+0\\
+\epsilon x_1^2x_2
+\end{bmatrix}
+\end{equation}
+
+We see, like last time, that the phase diagram shows a spiral decay towards an equilibrium at the origin. With the Poincare Bendixson we can see if it truly converges.
+
+Consider the energy function $V(x): \mathcal{R}^2 \rightarrow \mathcal{R}$ for the function $V(x) = x_1^2 + x_2^2$ which measures energy in the state about $(0,0)$.		
+Let's look at $\frac{d}{dt}V(x) = \frac{\partial V}{\partial x_1}\frac{d}{dt}x_1 + \frac{\partial}{\partial x_2}\frac{d}{dt}x_2 + \frac{\partial V}{\partial t} = 2x_1(x_2) + 2x_2(-x_1 - \epsilon x_1^2 x_2) = -2\epsilon x_1^2 x_2$. Over time, we see that this is monotonically decreasing. Looking at V we see that it can either converge to a nonzero value or converge to zero; but regardless it is a monotonically decreasing function. This nature of this energy function can geometrically draw out a circle and still be constant. Looking at $\dot{V}$ we see that it is zero on the $x_1, \quad x_2$ axes as well as at the origin. $\dot{V}=0$ is not an invariant set for the flow, which implies that $V\rightarrow0$ which means that $x_1$ and $x_2$ go to zero.
+
+Another example:
+\begin{equation}
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2
+\end{bmatrix} =
+\begin{bmatrix}
+x_2 \\
+-\frac{1}{2}x_1 - x_2^2 
+\end{bmatrix}
+\end{equation}
+
+Perhaps our first guess for constructing V is $V = x_1^2 + ax_2^2$ and therefore the solution for $\dot{V} = 2x_1x_2 + 2ax_2(-\frac{1}{2}x_2 - x_2^2) $ choose that $a=2$ such that the non-definite term $2x_1x_2$ disapears (recall that we want sign definite terms in the derivative of V). This leaves us with $\dot{V} = -4x_2^3$ which is not sign definite. So, we go back to playing around with the Lyapunov function V again. 
+
+
+Let us look at $V = x_1^2x_2 + \frac{4}{3}x_2^3$ which gives $\dot{V} = 2x_1x_2^2 + (x_1^2 + 4x_2^2)*(\frac{-1}{2}x_2 - x_2^2) = \frac{-1}{2}x_1^3 - x_1^2x_2^2 - 4x_2^4$. We see that we still have an bad term (the cubed) as it is not sign definite. Sometimes you can argue around this mathematically, but here it does not work out. There will be sections of the phase plane where $\dot{V}$ is positive, and portions that are negative. If this is your function, you must walk about in the negative section. But try to tweak your Lyapunov function. We need both orders to satisfy different conditions. These are all sufficient conditions for convergence. Also if you cannot show convergence, that does not mean it is unstable.
+
+Now with the following with input control: 
+\begin{equation}
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2
+\end{bmatrix} =
+\begin{bmatrix}
+x_2 \\
+-\frac{1}{2}x_1 - x_2^2 
+\end{bmatrix} + 
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}u
+\end{equation}
+
+We can look again at the bad function $V = x_1^2 + 2x_2^2$. We can use this Lyapunov analysis to choose a $u$ to converge. We now have $\dot{V} = -4x_2^3 + 4x_2u$. Let us choose that $u = x_2^2 -x_2$ and we get that $\dot{V} = -4x_2^2$ we have canceled the sign indefinite portion and the derivative is monotonically decreasing.  But does the system converge to zero? It is not clear that $x_1$ will go to zero. This control makes the system linear! This is also a sort of feedback linearization technique. j
+
+What if we choose $V = x_2^2$? We see that $\dot{V} = 2x_2(-x_2^2 -\frac{1}{2}x_1 + u)$. We can have $u = \frac{1}{2}x_1 + x_2^2 -x_2$ so then it is such that $\dot{V} = -2x_2^2$. We have a monotone decreasing definite function, and it looks a lot like $-2V$. This ODE can be solved directly. Therefore $V = e^{-2t}V(0)$ which converges exponentially. This tells you nothing about the convergence properties wrt $x_1$. Looking at the state space, clearly we see that $x_1$ converges to some nonzero value as the rate of change depends on $x_2$. $x_1$ can go to somewhere nonzero and stop. Essentially $V$ itself has bad level sets: lines along the $x_1$ axis. 
+
+From this, we see we will need: $V(x)$ to be lower-bounded ($\dot{V}\leq 0 \rightarrow V$ converges), we want that a bounded $V$ implies a bounded $x$ state (we want the level sets of V to bound x), we want that for when V goes to zero it implies that $x$ goes to zero as well, we want that $\dot{V}\leq \forall x$ in neighborhood of the equilibrium. 
+
+Main theorem: let $\bar{x}$ as an equilibrium for differential equation $\dot{x} = f(x)$ and $D \subset \mathcal{R}^n$ is a domain containing $\bar{x}$. If $V:D\rightarrow \mathcal{R}$ is $C^1$ (continuously differentiable) and positive definite on D, $\dot{V}$ is negative semi-definite on D, then the equilibrium point $\bar{x}$ is stable i.s.l (in the sense of Lyapunov). If in addition, $\dot{V}(x)$ is negative definite on D, then $\bar{x}$ is asymptotically stable i.s.l.
+
+\subsection*{Lyapunov Stability}
+This is a property of an equilibrium! How do flows behave in the neighborhood of an equilibrium? Definition: An equilibrium $\bar{x}$ of $\dot{x} = f(x)$ is stable isl if for each $\epsilon > 0$ there exists $\delta >0$ such that $\norm{x(0) - \bar{x}} < \delta$ then $\norm{ x(t) - \bar{x}} < \epsilon,\quad \forall t \geq 0$.
+
+
+
+
+\section*{February 12th}
+Recall the main Lyapunov theorem from last class. If $V:D\rightarrow R$ is $C_1$
+and positive definite on D AND $\dot{V}$ is negative semi-definite on D then $\bar{x}$ is stable. If $\dot{V}$ is negative definite on D then $\bar{x}$ is asymptotically stable.
+
+ Sign-definite functions: A functional $f:\mathcal{R}^n \rightarrow R$ is PSD on D if $f(x)\geq 0, \quad \forall x \in D$. It is PD if in addition, $f(x)=0 \rightarrow x = \bar{0}$. Let us look at the contrapositive of this statement: where $x \neq 0 \rightarrow f(x) \neq 0$. (here we say that $\rightarrow$ is basically "only  if").
+
+ Similarly considering NSD functions, it is such that $f(x) \leq 0, \quad \forall x \in D$ as well as ND including the statement that $f(x)=0 \rightarrow x = \bar{0}$.
+
+ Prototype definite functions: $f(x) = x^TPx$ has quadratic form for $P$ as a PSD (PD) matrix. And for $x^TPx > 0$ the matrix P must have nonnegative eigenvalues and they must be strictly positive. Or they must be $\geq 0$ for the PD case. 
+
+
+ Now let us talk about ISL: in the sense of Lyapunov. Lyapunov stability is a property of an equilibrium. Def: an equilibrium $\bar{x}$ of $\dot{x}=f(x)$ is stable ISL if $\forall \epsilon >0 \quad \exists \delta >0$ such that $\norm{x(0) - \bar{x}} < \delta$ then $\norm{ x(t) - \bar{x}} < \epsilon,\quad \forall t \geq 0$. We can think of this as a ball $B_\delta: x\in \mathcal{R}^n$ for $\norm{x}\leq \delta$. These balls are general: can be spherical, circular, ellipsoidal, etc. Some closed smooth surface generally. 
+
+ We show on a plot two enclosed surfaces: the epsilon and delta ball. To show stability, we must show that $\forall \epsilon$ the system stays within.
+
+ EG: Suppose we have a limit cycle, where things from inside converge, and outside systems converge in. For $B_\epsilon$ that is smaller than the cycle, we must pick a $B_\delta$ that is exactly the origin.  Nothing else qualifies as stable.
+
+ If $\bar{x}$ is stable ISL, $\lim_{t\rightarrow \inf} \norm{x(t) - \bar{x}} = 0$ starging from some D containing $\bar{x}$  then this $\bar{x}$ is asymptotically stable.
+
+More on norms on $\mathcal{R}^n$. We know that $\norm{x}_{infty} = \max_i \rvert x_i \rvert$. A norm must satisfy: (1) $\norm{x}\geq 0$ $\forall x \in \mathcal{R}^n$, (2) if the $\norm{x} =  0 \rightarrow x = \bar{0}$ which means it is a PD function, (3) $\norm{ax} = \rvert a \rvert \norm{x}$ $\forall x \in \mathcal{R}^n \quad \forall a$ scalars, (4) $\norm{x_1 + x_2} \leq \norm{x_1} + \norm{x_2}$ or the triangle inequality. All norms on $\mathcal{R}^n$ are equivalent in the sense that $\norm{x}_\alpha, \norm{x}_\beta$ can be related by $c_1 \norm{x}_\alpha \leq \norm{x}_\beta \leq c_2 \norm{x}_\alpha$. Therefore you can just use whatever norms you want in Lyapunov candidate functions. 
+
+Lyapunov instability: $\bar{x}$ is unstable ISL if there exists an $\epsilon > 0$ such that $\forall \delta >0$  there exists a $x(0)$ initial condition such that $\norm{x(0) - \bar{x}}<\delta \rightarrow \norm{x(t) - \bar{x}} > \epsilon$ some $t\geq 0$. 
+
+Lyapunov methods can provide: (1) rigorous analysis of stability (which you do not often get with linearization); (1a) useful for local equilibrium that are not hyperbolic; (1b) global stability properties, (2) can estimates of the region of attraction of an asymptotically stable equilibrium; (3) estimates on the speed of convergence; (4) control design methods to make V decrease; (5) guidelines for constructing vector fields that have inherent stability properties.
+
+
+
+
+\section*{February 14th, 2019}
+For autonomous vector field $\dot{x}=f(x)$ for $V:\mathcal{R}^n \rightarrow \mathcal{R}$. And we viewed $\dot{V}$ as a set of partial derivatives, which ends up looking like
+
+\begin{equation}
+\dot{V}=
+\begin{bmatrix}
+\nabla V
+\end{bmatrix}
+\begin{bmatrix}
+f_1(x) \\
+f_2(x) \\
+...
+\end{bmatrix}
+\end{equation}
+
+This gradient is orthogonal to the level set of V for $V(x)=c$. Therefore $\dot{V}$ is the inner product. We can look at the sign to see it entering smaller level sets (we want $V$ to decrease!). But some $\dot{V}$ flows behave properly but seem to diverge under poorly constructed level sets. So make your level sets with an understanding of the flows.
+
+So far we have said to choose a $V$ then choose $\dot{V}$. But we know this is suboptimal. Try choosing $\nabla V$ first, then find $V$ to see if it is PD. Generally speaking it seems to be perfect to choose $\nabla{V} = -f(x)$ such that $\dot{V} = f(x)^Tf(x)$. Now what if we do $\dot{V} = f(x)^TP(x)f(x) = G$? This gives us more flexibility.
+
+The book suggests $\dot{V} = g(x)f(x)$ such that it is negative definite. Then you can integrate this and make sure that it is positive definite. Once this is satisfied, the Lyapunov function satisfies ISL requirements.
+
+For $\dot{V} = \frac{d}{dx}V(x)f(x)$, and there is a lot of flexibility for choosing $g(x)$. Additionally $V(x) = \int_0^x g(\sigma)d\sigma$. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\bibliographystyle{plainnat}
+\clearpage
+% \bibliography{bib}
+\end{document}
