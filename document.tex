@@ -55,6 +55,13 @@
 \begin{document}
 
 \maketitle
+
+
+
+\newpage
+\section{Introduction}
+This course is taught by Dr. Dale Lawrence at The University of Colorado Boulder.
+
 \newpage
 \section*{January 15th, 2018}
 There are 3 exams -- 30\% each, and all take home exams. The Homework is 10\%. OH is on Tuesdays 3-4pm
@@ -530,6 +537,31 @@ So far we have said to choose a $V$ then choose $\dot{V}$. But we know this is s
 The book suggests $\dot{V} = g(x)f(x)$ such that it is negative definite. Then you can integrate this and make sure that it is positive definite. Once this is satisfied, the Lyapunov function satisfies ISL requirements.
 
 For $\dot{V} = \frac{d}{dx}V(x)f(x)$, and there is a lot of flexibility for choosing $g(x)$. Additionally $V(x) = \int_0^x g(\sigma)d\sigma$. 
+
+And for $\dot{x} = ax^n = f(x)$ we know that $\dot{V} = g(x)f(x)$, and for $g(x) = -ax^n$ we have that $\dot{V} = -a^2x^{2n}$ therefore 
+
+\begin{equation}
+V(x) = \int_0^x -a\sigma^nd\sigma = \frac{-a\sigma^{n+1}}{n+1} \Big \rvert_0^x = \frac{-ax^{n+1}}{n+1}	
+\end{equation}
+
+Where the exponent is even. We can understand the stability result without explicitly knowing the solution.
+
+Another given vector field case example: $\dot{V} = g(x)f(x)$ for $g(x) = \nabla V$. We can look at the line integral (plots). 
+
+Some Lyapunov functions take years to find. Prof. Lawrence describes a satellite ADCS system with a single RWA that took him a year.
+
+Domain of attraction: another thing that linearization cannot tell you! Let's say $V(x)$ is PD on domain D and $\dot{V}(x)$ is ND on domain (both "about equilibrium"). Obviously remember this equilibrium does not have to be at the origin.
+
+We draw large level sets $V(x)$ in D that are bound by D. These are also domains of attraction. Anything outside D is not necessarily a domain of attraction because $V(x)$ is only qualified to be PD on the domain. The level sets that qualify as domains of attraction are bounded.
+
+EG: $V(x) = \frac{x_1^2}{1+x_1^2}+x_2^2$. For global asymptotic stability, the level sets of $V(x)$ must be globally bounded.
+
+
+
+
+
+\section*{February 19th}
+
 
 
 

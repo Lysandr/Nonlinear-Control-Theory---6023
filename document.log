@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.5.3)  14 FEB 2019 11:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.5.3)  19 FEB 2019 10:58
 entering extended mode
 **./document.tex
 (document.tex
@@ -1284,7 +1284,7 @@ LaTeX Info: Redefining \nameref on input line 55.
 \openout5 = `document.out'.
 
 \c@lstlisting=\count170
-<boulderlogo.jpg, id=6, 289.08pt x 216.81pt>
+<boulderlogo.jpg, id=10, 289.08pt x 216.81pt>
 File: boulderlogo.jpg Graphic file (type jpg)
 <use boulderlogo.jpg>
 Package pdftex.def Info: boulderlogo.jpg  used on input line 58.
@@ -1312,20 +1312,20 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
-[2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 623.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 623.
+[2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 652.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 652.
  (document.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 623.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 623.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 652.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 652.
 Package rerunfilecheck Info: File `document.out' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+(rerunfilecheck)             Checksum: 1DB6ACF0CA858A323D5862A2C7FCFE6D;48.
  ) 
 Here is how much of TeX's memory you used:
- 20478 strings out of 493305
- 382554 string characters out of 3124581
- 465462 words of memory out of 3000000
- 23626 multiletter control sequences out of 15000+200000
+ 20487 strings out of 493305
+ 382646 string characters out of 3124581
+ 465467 words of memory out of 3000000
+ 23632 multiletter control sequences out of 15000+200000
  11044 words of font info for 42 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,12n,66p,1616b,347s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1347,9 +1347,9 @@ l/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/Padraig
 ms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Padraig Lysand
 rou/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm1
 0.pfb>
-Output written on document.pdf (13 pages, 412363 bytes).
+Output written on document.pdf (14 pages, 416004 bytes).
 PDF statistics:
- 143 PDF objects out of 1000 (max. 8388607)
- 32 named destinations out of 1000 (max. 500000)
- 18 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 153 PDF objects out of 1000 (max. 8388607)
+ 35 named destinations out of 1000 (max. 500000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
