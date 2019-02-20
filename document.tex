@@ -328,7 +328,7 @@ What if the RHS is not Lipschitz continuous? What can we say about the solutions
 
 Properties of NL ODEs: (3) solutions may not exist for all time. Example given: $\dot{x} = 1+x^2$. Here the $k$ values for the neighborhood of the chosen $x_0$ will be different over the function. But this is still Lipschitz continuous. NOT uniformly Lipschitz continuous. A solution to this is $x(t)=\tan(t)$, which escapes in finite time. 
 
-Thm 3.2 in Khalil: if f(x) is uniformly Lipschitz continuous, the solution exists $\forall t$. This uniformly assumption means the same k holds $\forall x \in \mathbb{R}^n$. This prevents the finite time escape issues, if that is actually an issue.
+Thm 3.2 in Khalil: if f(x) is uniformly Lipschitz continuous, the solution exists $\forall t$. This uniformly assumption means the same k holds $\forall x \in \mathcal{R}^n$. This prevents the finite time escape issues, if that is actually an issue.
 
 $f(x) \quad C^0 \Leftarrow$ Locally Lipschitz continuous $\Leftarrow$ uniformly Lipschitz is stronger. $C^1$ is stronger than Locally Lipschitz and implies locally Lipschitz. So $C^1 \Leftarrow$ uniformly $C^1$. A convex function has an unbounded slope, so is not technically $C^1$. See hand written notes for this to be clearer.
 
@@ -561,25 +561,32 @@ EG: $V(x) = \frac{x_1^2}{1+x_1^2}+x_2^2$. For global asymptotic stability, the l
 
 
 \section*{February 19th}
+On global asymptotic stability (GAS): last time we stated that we can look at the Lyapunov level sets. If we can show that the derivative of V is ND, then it is definitely entering the set, and being attracted to the equilibrium. For local asymptotic stability, $V(x)$ is PD on D and $\dot{V}(x)$ is ND on D.
+
+From  diagrams: essentially we want to make sure that our Lyapunov function is stricly increasing and has no minima or maxima. If $\dot{V}(x)$ is ND $\in \mathcal{R}$, then $V(x) \rightarrow 0$. This also implies that $x\rightarrow 0$ as the PD function $V(x)$ only has a zero point at the origin. This is GAS.
+
+EG: for a function $g:[0,a)\rightarrow [0,\infty)$ where $a$ could be finite or infinite, with $g(0) = 0$ and strictly increasing on $[0,a)$, then function $g$ is said to be "class K." 
+
+If $\dot{x} = f(x)$ for $f:\mathcal{R} \rightarrow \mathcal{R}$ and $V(\rvert x \rvert)$ is class K with $a = \infty$ and $\dot{V}(x)$ is ND on $\mathcal{R}$. This means that $x=0$ is GAS. This is a scalar vector field; this is not rigorous enough for a higher dimension vector field.
+
+For $f:\mathcal{R}^@ \rightarrow \mathcal{R}^2$, with $V(x): \mathcal{R}^2 \rightarrow \mathcal{R}$ and we have that $V(x) = \frac{x_1^2}{1+x_1^2} + x_2^2$ (as seen in last class). We remember that the level sets about the origin are circular and become ovular as they go out, and asymptoticall become unbounded. Is this class K? It turns out that $V(\norm{x})$ is class K with $a = \infty$. In general it does not work for the multivariate case. The essential problem with this is that some of the level sets are not bounded or closed.
+
+EG: suppose we have $g:[0,a)\rightarrow [0,\infty)$ where $a=\infty$ and $r \rightarrow \infty \Rightarrow g(r) \rightarrow \infty$, then g is called "class $K_\infty$." So if $g(r) = V(\norm{x})$. Our previous example $V(x) = \frac{x_1^2}{1+x_1^2} + x_2^2$ is class K but NOT class $K_\infty$.
+
+Instead, $g$ (class $K_\infty$) is called radially unbounded more frequently.
+
+\textbf{THM 4.2}: Let $\bar{x}$ be an equilibrium of $\dot{x} = f(x)$ if $V:\mathcal{R}^2 \rightarrow \mathcal{R}$ is $C^1$ and PD (wrt x) and radially unbounded and if $\dot{V}$ is ND then $\bar{x}$ is GAS.
 
 
+Here with diagram we also discuss unstable ISL equilibria and how they help define regions of attraction. 
 
+\textbf{Lyapunov Instability: Def:} $\exists \quad \epsilon > 0 $ and (upside down f??) $\forall \delta > 0$ for $\norm{x(0) - \bar{x}} < \delta \Rightarrow \norm{x(t) - \bar{x}} > \epsilon $ for some t.
 
+If V is PD on D (containing $\bar{x}$) and $\dot{V}$ is PD on D $\Rightarrow \bar{x}$ is unstable ISL. The book talks about Chetaev's theorem (4.3) is strronger as it has a weaker condition on $\dot{V}$.
 
+Let us look at a linear system such that $\dot{x} = f(x) =Ax$ with $V(x) = \norm{x}_p = x^TPx$ for $P$ a PD symmetric matrix. And then $\dot{V} = x^TP\dot{x} + \dot{x}^TPx = x^TPAx + x^TA^TPx = -x^TQx$ where the last portion is just a quadratic form where Q is a PD matrix.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+\textbf{THM 4.6:} For $Re(\lambda_i (A))<0, \quad \forall i \Leftrightarrow$ for any PD Q matrix there exists a PD P matrix such that $A^TP + PA = -Q$. This is the Lyapunov Equation from linear systems theory. This can be a way to pick a $V$ function that works with the linearized dynamics about a hyperbolic equilibrium. 
 
 
 
