@@ -591,14 +591,22 @@ Let us look at a linear system such that $\dot{x} = f(x) =Ax$ with $V(x) = \norm
 
 
 
+\section{February 21st}
+Today we are going to talk about performance (convergence rate). EG: $\dot{x}=f(x)$ with $V(x)$  PD and $\dot{V}(x) = -\alpha V(x) \Rightarrow V(x) =e^{-\alpha t}V(x_0)$. Suppose our $V(x) \geq b\norm{x}^2$ as an underbound and impose an upper bound on the derivative as such $\dot{V}(x) \leq -a \norm{x}^2 \leq \frac{-a}{b}V(x)$. This is similar to what we said at the beginning but an innequality and it is a differential "in-equation" if you will. We can look at a system defined by $\dot{\omega}(t)= \frac{-a}{b}\omega(t)$ which has solution $\omega = e^{\frac{-a}{b}t} \omega_0$. Now if $\omega_0 = V(x_0) \Rightarrow V(t) \leq \omega(t) \quad \forall t\geq t_0$. This means that $V(t) \leq e^{\frac{-a}{b}t} V(x_0) \quad \forall t$. Then it is such that $\norm{x}^2 \leq \frac{1}{b} e^{\frac{-a}{b}t}V(x_0), \quad \forall t$ We also have $V(x)\leq c \norm{x}^2,\quad \forall x$ then  we have that $\norm{x}^2 \leq \frac{c}{b}e^{frac{-a}{b}t}\norm{x_0}^2$. We now have an expression that bounds the system by the initial condition. We do similar things in linear systems. This can give you a way to estimate the exponential convergence rate as a time constant.
 
+New topic: LaSalle invariance. If V is $C^1$ and PD about some $\bar{x}$ equilibrium point of interest on domain D. We will call the set of x that is in domain D,  $\Omega_b : \{x \rvert V(x) \leq b \}$ is bounded (for $\rvert$ meaning such that). Basically $b$ is an upper bound on the $V(x)$ function from above that caps it off. if $\dot{V}(x) \leq 0 $ on D, what can we say about x? Well if $x_0 \in \Omega_b, \quad V(x(t)) \leq b \quad \forall t$. Therefore $\Omega_b$ is a positively invariant set.
 
+We showed some diagrams of this invariance where the state vector can converge to a level set $\Omega_a$ smaller than the initial level set. Sometimes there are flat spots in the $\dot{V}(x)$ function that cause $V(x)$ to stop which create these stopping level sets where a system will stabilize about. 
 
+EQ: $\dot{x_1} = x_2, \quad \dot{x_2} = -x_1 - x_2^3$ with our Lyapunov candidate function $V(x)= \frac{1}{2}(x_1^2 +x_2^2)$ with $\dot{V}(x) = (x_1 \dot{x_1} + x_2 \dot{x_2}) = -x_2^4$ after plugging in our dynamics, which is NOT ND about (0,0). Let us define the set $E=\{ x \rvert \dot{V}(x) = 0 \}$. We see that we will converge to this set $E$ along the $x_1$ line. But as we look at the flows, we see that starting in E does not mean we will stay in E. In this case, the largest invariant set in E is (0,0). Therefore $x(t) \rightarrow 0 $ as $t \rightarrow \infty$.
 
+\textbf{THM LaSalle:} Let $\Omega \in D$ be compact and positively invariant (forward in time). If $V(x)$ is $C^1$ and $\dot{V} \leq 0$ in $\Omega$, then x converges to the largest invariant set $\mathcal{M}$ in $\mathcal{E}:\{ x \rvert \dot{V}(x) =0 \}$. In the previous example $\mathcal{M} : \{ (0,0) \}$. In this theorem, you do not necessarily need positively definiteness. 
 
+Typically V is positive definite, and $\Omega = $ level set of V.
 
+\textbf{Corollary 1 (4.1):} For and equilibrium $\bar{x}$, if V is $C^1$ and PD about $\bar{x}$, $\dot{V}\leq 0$ on D and the only invariant set in $\mathcal{E}$ is $\bar{x}$. Then $\bar{x}$ is asymptotically stable.
 
-
+\textbf{Corollary 2 (4.2):} If V above is radially unbounded and $\dot{V} \leq 0$ on $\mathcal{R}^n$ then $\bar{x}$ is GAS.
 
 
 
