@@ -608,34 +608,70 @@ Typically V is positive definite, and $\Omega = $ level set of V.
 
 \textbf{Corollary 2 (4.2):} If V above is radially unbounded and $\dot{V} \leq 0$ on $\mathcal{R}^n$ then $\bar{x}$ is GAS.
 
+LaSalle is USEFUL.
 
 
 
 
+\section{February 26}
+More general invariant sets: Let us look at the hopper robot.
 
+\begin{equation}
+\begin{bmatrix}
+\dot{x}_1 \\
+\dot{x}_2
+\end{bmatrix}
+ = 
+\begin{bmatrix}
+0 & 1 \\
+\frac{-k}{m} & 0
+\end{bmatrix}
+\begin{bmatrix}
+{x}_1 \\
+{x}_2
+\end{bmatrix}
++
+\begin{bmatrix}
+0 \\
+\frac{1}{m}
+\end{bmatrix}
+f_c
+\end{equation}
 
+Now if we want it to follow a stable limit cycle behaviour, we will want to develop a nonlinear control method. Let us use
 
+\begin{equation}
+	f_c = (r_0^2 - x_1^2 -x_2^2)x_2
+\end{equation}
 
+The damping will go to zero on the circle defined by $r_0$. And the force will oppose $x_2$ as the internal term will be negative. We are using the state space to geometrically define a circle with offset $r_0$. Inside the state space circle, we generate energy with the input force, and outside this we dissipate energy. 
 
+Let us construct a Lyapunov approach. 
+\begin{equation}
+	V(x) = (r_0^2 - x_1^2 -x_2^2)^2
+\end{equation}
 
+We see that this function has a zero at $r_0$ and is positive definite about this level set. This is not an equilibrium point but a level set. 
 
+Now let us look at
+\begin{equation}
+	\dot{V}(x) = \frac{\partial V}{\partial x_1}\dot{x_1} + \frac{\partial V}{\partial x_2}\dot{x}_2 = \\
+	2(r_0^2 - x_1^2 -x_2^2) \{ -2x_1x_2 - 2x_2(\frac{-k}{m}x_1 + \frac{1}{m}(r_0^2 - x_1^2 -x_2^2)x_2) \}
+\end{equation}
 
+If we are stuck with the spring constant, we can change the input function by forcing the $x_1$ and $x_2$ dependence. This would effectively be elongating the circle in the phase portrait domain. And for $\frac{k}{m} = 1$ we will have that $\dot{V}(x) = \frac{-4}{m}x_2^2(r_0^2 - x_1^2 -x_2^2)^2$. We see that this is negative semi definite. Is it ND relative to the circle? No! It has an $x_2$ dependence that can mess things up. 
 
+But via LaSalle, $x$ converges to the larges invariant set $\mathcal{M} \subset \mathcal{E} = \{  x \rvert \dot{V}(x) = 0 \}$. The set $\mathcal{M}$ is the equilibrium of the dynamics, and is only the origin. To be on the circle:
 
+\begin{align}
+r = r_0 \\
+\frac{d r^2}{dt} = 0  = 2x_1x_2 - 2x_2x_1
+\end{align}
 
+This is an invariant set on the flow. So the total invariant set $\mathcal{M}$ just contains the circle and the point. LaSalle says that we converge to the largest set. If you start at the origin, you stay there. If you start right off center, it isn't clear whether you would converge to the center. Lawrence says he hasn't looked at the flow analysis. But there is enough using the flows to show essential GAS (essential meaning basically everything except origin). There is a really small set of points that do not end up at the invariant set.
 
-
-
-
-
-
-
-
-
-
-
-
-
+Let us now talk about Lyapunov vector fields that provide nice arguments for stability. For $\dot{x} = f(x)$. He mentions a guidance vector field for UAVs. Basically where you should be moving in the state space vector field. Let us say that you want to fly about a limit cycle. Let's say you want to fly about some radius in space $\rho$ about the origin point. We shall construct the Lyapunov function to begin with $V(x) = \frac{1}{2} (x_1^2 +x_2^2 - \rho^2)^2$, we then have that $\dot{V}(x) = 2(x_1^2 + x_2^2 - \rho^2) [x_1 x_2] [\dot{x_1} \dot{x_2}]^T$. We see the second part is the $f(x)$ and the first part is jujst the gradient of V. So what would you pick $f(x)$ to be? We would like $f(x) = -\nabla V ^T$. Therefore we have that $\dot{V}(x) = - \nabla V (\nabla V)^T = -[\frac{\partial V}{\partial x}][\frac{\partial V}{\partial x}]^T$. But we want to be flying at a constant velocity, so we add a new portion such that $\dot{V}(x) = - \nabla V \nabla V^T + \nabla V S(x)$ for $f(x) = -\nabla V ^T + S(x)$. We choose that $[\frac{\partial V}{\partial x}]S(x) = 0$. So we structure it such that $S(x) = c [x_1 -x_2]^T$.
+ 
 
 
 
