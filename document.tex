@@ -674,17 +674,80 @@ Let us now talk about Lyapunov vector fields that provide nice arguments for sta
  
 
 
-\section{March 5th}
+\section{March 5th: Starting I/O System Approaches}
 The big two nonlinear approaches: Lysapunov state space approaches and input output systems. Next major phase of the course: IO systems and stability.
 
 SEE WRITTEN NOTES: PREDOMINANTLY FIGURES
 
 
-\section{March 7th}
+\section{March 7th: I/O Stability Examples}
+EG: $y = H(u) = u^2$. Using an $\mathcal{L}_\infty$ norm to talk about $\mathcal{L}$ stability.
+If we take $\norm{y_\tau}_{\mathcal{L}_\infty} \leq (?) \alpha(\norm{u_\tau}_\infty) + \beta$, for $\tau$ indicating truncation. It is that $\forall \tau \geq 0, \quad \forall u \in \mathcal{L}_{\infty_e}$. Here he states that $\alpha$ is an increasing function that is not necessarily linear. We find a $\gamma$ instead of $\alpha$ that makes the right side of the inequality describe an affine function (linear over domain). So, $\norm{y_\tau}_{\mathcal{L}_\infty} = \sup_{\tau \geq t \geq 0} \ \rvert y_\tau(t) \rvert \leq \alpha (\sup_{\tau \geq t \geq 0} \ \rvert u_\tau (t)\rvert) + \beta$. Can we show this inequality $\forall \tau, \ \forall u$.
+
+In our scenario, $\norm{y_\tau}_{\mathcal{L}_\infty}  = \sup_{\tau \geq t \geq 0} \ \rvert u_\tau ^2(t)\rvert = (\sup_{\tau \geq t \geq 0} \ \rvert u_\tau(t)\rvert)^2$; we just substituted and brought the supremum out. We know this to be $\norm{y_\tau}_{\mathcal{L}_\infty} =\alpha(\norm{u_\tau}_{\mathcal{L}_\infty}) $. He states that this demonstrates H being $\mathcal{L}_\infty$ stable. Can this be true? : $\sup_{\tau \geq t \geq 0} \ \rvert u_\tau ^2 (t)\rvert \leq \gamma \sup_{\tau \geq t \geq 0} \ \rvert u_\tau(t) \rvert + \beta$. This is NOT true. So in this scenario, H is not $\mathcal{L}_\infty$ stable.
+
+This is one of the simplest examples we can think of. In combinations of systems, you can use the small gain theorem to show linear stability. In the combination of linear and nonlinear components, we find the IO stability of the linear system.
+
+In the case of $\dot{x} = Ax + Bu, \ \ y= Cx$, we can write down the solution: $y(t) = Ce^{At}x_0 + C \int_0^t e^{A(t-\sigma)} Bu(\sigma)d\sigma$. Looking at $\mathcal{L}_\infty$ stability, we see (where bars are norm on $\mathcal{R}^p$):
+
+\begin{equation}
+	\sup_{\tau \geq t \geq 0} \ \rvert y_\tau(t) \rvert_p \leq \alpha (\sup_{\tau \geq t \geq 0} \ \rvert u_\tau(t) \rvert) + \beta, \quad \forall \tau \geq 0, \ \forall u \in \mathcal{L}_\infty
+\end{equation}
+
+We can plug in our dynamics and we must perform, and with triangle inequality :
+\begin{equation}
+	\rvert Ce^{At}x_0 + C \int_0^t e^{A(t-\sigma)} Bu(\sigma)d\sigma \rvert_p \leq \quad \rvert Ce^{At}x_0  \rvert \ + \ \rvert  C \int_0^t e^{A(t-\sigma)}Bu(\sigma)d\sigma \rvert
+\end{equation}
+
+This gets into the topic of reduced norms.  For example, $w = Mz,\ \ M:\mathcal{R}^n \rightarrow \mathcal{R}^m$. Then if we take norms: $\norm{w}_m = \norm{Mz} \leq ( \ )  \norm{z}, \ \forall z \in \mathcal{R}^n$. We want the worst case for scaling $z$.  Let us define:
+
+\begin{equation}
+ \norm{M}_{ind} = \max_{norm{z}=1} \frac{\norm{w}_m}{\norm{z}_n}
+\end{equation}
+
+So this questions asks about the worse case direction of z for this matrix. This ratio is not a function of scale, but more of direction. So we state $\norm{w} \leq \norm{M} \norm{z}, \ \forall z \in  \mathcal{R}^n$
 
 
+\begin{align}
+\norm{Ce^{At}x_0}_{ind} \leq & \norm{Ce^{At}}_{ind}\norm{x_0}_{ind} \\ 
+& \leq \norm{C}_{ind} \norm{e^{At}x_0}_{ind} \\
+& \leq \norm{C}_{ind} \norm{e^{At}}_{ind} \norm{x_0}_{ind}
+\end{align}
+
+But the dynamics are hard things to bound; especially if they hold for all time. The initial condition is finite and C can be bound. The eigenstructure of the matrix will give us insight into bounding this term.
+
+Let us use the Euclidean norm on $\mathcal{R}^n$, the induced norm, using the Hermitian operator: 
+
+\begin{equation}
+\norm{M}_{ind} = \sigma_{max}(M) = (\lambda_{max}(M^HM))^{1/2}
+\end{equation}
+
+And in our case from previous, knowing the A matrix to be real:
+\begin{align}
+\norm{e^{At}}_{ind} = \sigma_{max}(e^{At}) = (\lambda_{max}(e^{A^Tt}e^{At}))^{1/2}
+\end{align}
+
+Now you may be tempted to say that $e^M e^N = e^MN$ but this is almost never the case. This is only true if and only if M and N commute. Let us use our eigenvalue perspective. If A is semi-simple, then there exists a nonsingular T such that $A = TDT^{-1}$ as a similarity transformation, where D is $diag\{ \lambda_i(A) \}$. There are also ways to make A semi-simple with small perturbations. This can be a knife-edge problem.
+
+Looking at the term $e^{At}$, substituting the similarity transform into the power series, we see that it evaluates to : 
+
+\begin{equation}
+e^{At} = T(I + Dt + \frac{D^2t^2}{2!}+ ...)T^{-1}
+\end{equation}
+
+Plugging this into our induced norm description, we have that 
+
+\begin{align}
+\norm{e^{At}}_{ind} =(\lambda_{max}((T^{-1})^T(e^{Dt})^TT^TTe^{Dt}T^{-1}))^{1/2} & = \sigma_{max}(Te^{Dt}T^{-1}) \\
+& \leq \sigma_{max}(T)\sigma_{max}(e^{DT})\sigma_{max}(T^{-1})
+\end{align}
+
+The inner maximum singular value portion evaluations to $(\lambda_{max} (e^{D^Ht}e^{Dt}))^{1/2} = (\lambda_{max} (e^{(D^H + D)t}))^{1/2} $ and we can say that $D^H + D = diag\{ \lambda_i(A)^H + \lambda_i(A) \} = diag\{2*Re\{ \lambda_i(A) \}\}$.
+
+Of course we want that $Re\{ \lambda_i(A) \} < 0$, but what if they are zero? Well then the diagonal element of the $e^{Dt}$ matrix will be one and are inherently bounded. Therefore the overbound of the eigen value matrix is one. They all start at one, and dip below for negative eigenvalues. 
 
 
+SO back to $\norm{Ce^{At}x_0}_{ind} \leq \sigma_{max}(C)\sigma_{max}(T)\sigma_{max}(T^{-1})\norm{x_0}_{ind}$. We can lump this into : $\beta = \sigma_{max}(C)\sigma_{max}(T)\sigma_{max}(T^{-1}) $.
 
 
 
