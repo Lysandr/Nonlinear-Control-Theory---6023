@@ -750,6 +750,102 @@ Of course we want that $Re\{ \lambda_i(A) \} < 0$, but what if they are zero? We
 SO back to $\norm{Ce^{At}x_0}_{ind} \leq \sigma_{max}(C)\sigma_{max}(T)\sigma_{max}(T^{-1})\norm{x_0}_{ind}$. We can lump this into : $\beta = \sigma_{max}(C)\sigma_{max}(T)\sigma_{max}(T^{-1}) $.
 
 
+\section{March 12: I/O Stability of Linear Dynamical Systems}
+Recall our standard input-output block defined by the linear system $\dot{x} = Ax+Bu, \ y=Cx$. We wrote the solution to this being the convolution integral, and worked on only the initial condition response. We found that we could bound this in terms of a constant bound under the condition that $Re\{ \lambda_i(A) \} \leq 0, \ \forall i$. Now can we bound the convolution portion such that it too is $\leq \gamma \norm{u}$. So:
+
+
+\begin{equation}
+	\sup_{\tau \geq t \geq0} \  \bigg \rvert C \int_0^\tau e^{A(t-\sigma)}Bu(\sigma)d\sigma  \bigg \rvert_p \ \leq \ \bar{\sigma}(C) \ \bigg  \rvert \int_0^\tau e^{A(t-\sigma)}Bu(\sigma)d\sigma \bigg  \rvert_p
+\end{equation}
+Where the vertical bars denote a norm on $\mathcal{R}^p$, we will use the Euclidean norm because this allows us to use singular values. Recall that we can assume, for A semi-simple, there exists a similarity transform $A = TDT^{-1}$. But this into the convolution, and factor out such that we get $Te^{D(t-\sigma)}T^{-1}$. Then we can write this as such: 
+
+\begin{equation}
+	\sup_{\tau \geq t \geq0} \ \rvert C \int_0^t e^{A(t-\sigma)}Bu(\sigma)d\sigma \rvert_p \ \leq \ \bar{\sigma}(C) \bar{\sigma}(T) \bar{\sigma}(T^{-1})   \ \bigg \rvert \int_0^\tau e^{D(t-\sigma)}Bu(\sigma)d\sigma \bigg \rvert_p
+\end{equation}
+Utilizing the triangle inequality, we can split up the summation such that 
+
+
+\begin{equation}
+	\bar{\sigma}(C) \bar{\sigma}(T) \bar{\sigma}(T^{-1})   \ \bigg \rvert \int_0^\tau e^{D(t-\sigma)}Bu(\sigma)d\sigma \bigg \rvert_p \ \leq \ \int_0^\tau \bigg \rvert e^{D(t-\sigma)} B u(\sigma) \bigg \rvert d\sigma \  \bar{\sigma}(C) \bar{\sigma}(T) \bar{\sigma}(T^{-1})
+\end{equation}
+This is also called Minkowskis Inequality.	With this, we can also show that :
+
+\begin{equation}
+	\bigg \rvert e^{D(t-\sigma)} B u(\sigma) \bigg \rvert \ \leq \ \bigg \rvert e^{D(t\sigma)}B \bigg \rvert \sup_{\tau \geq t \geq 0} \big \rvert u(\sigma) \big \rvert
+\end{equation}
+ 
+
+Where clearly we have now
+
+\begin{equation}
+\sup_{\tau \geq t \geq 0} \big \rvert u(\sigma) \big \rvert = \norm{u}_{\mathcal{L}_{\infty e}}
+\end{equation}
+
+Putting this back together, we can show that
+
+\begin{equation}
+\int_0^\tau \bigg \rvert e^{D(t-\sigma)} B u(\sigma) \bigg \rvert d\sigma \ \leq \ \int_o^\tau \big \rvert e^{D(t-\sigma)} \big \rvert d\sigma \ \bar{\sigma}(B) \norm{u}_{\mathcal{L}_{\infty e}}
+\end{equation}
+
+So the last thing to be bounded is the integration of matrix exponential term. Using our truncation we may as well let the $t$ in the integral be a $\tau$.
+
+You can show that 
+
+\begin{equation}
+	\int_o^\tau e^{d_i(t-\sigma)} d\sigma = e^{d_it} \int_o^\tau e^{-d_i \sigma} d\sigma = \frac{e^{d_i \tau}}{-d_i} \int_o^\tau e^{-d_i\sigma} (-d_i)d\sigma = \frac{e^{d_i\tau}}{-d_i}(e^{-d_i\tau} - e^{0}) = \frac{-1}{d_i} + \frac{1}{d_i}e^{d_i\tau} 
+\end{equation}
+
+So this thing converges to the constant $\frac{-1}{d_i}$; it remains finite. The area under a decaying exponential is bounded.
+
+Therefore, that integral portion $\leq \gamma \iff$ the eigenvalues are negative. Alll together we have that  
+
+\begin{equation}
+\sup_{\tau \geq t \geq 0} \bigg \rvert \int_0^\tau e^{A(t-\sigma)}Bu(\sigma) d\sigma \bigg \rvert \leq \bar{\sigma}(C)\bar{\sigma}(T)\bar{\sigma}(T^{-1})\bar{\sigma}(B) \gamma \sup_{\tau \geq t \geq 1} \rvert u(t) \rvert,\quad \forall u \in \mathcal{L}_{\infty e}
+\end{equation}
+
+And so back to the original, we have that 
+
+\begin{equation}
+	\norm{y}_{\mathcal{L}_{\infty e}} \leq \beta + \bar{\gamma} \norm{u}_{\mathcal{L}_{\infty e}}
+\end{equation}
+
+For $\bar{\gamma} = \bar{\sigma}(C)\bar{\sigma}(T)\bar{\sigma}(T^{-1})\bar{\sigma}(B) \gamma$. Which means that this system is finite gain $\mathcal{L}_{\infty}$ stable. This was the time invariant solution. The $\mathcal{L}_1$ convolution theorem accounts for linear time varying systems. 
+
+\textbf{$\mathcal{L}_1$ Convolution Theorem:} The system $y = H(u)$ where (when initial conditions are zero) $y(t) = \int_0^t h(t-\sigma)u(\sigma)d\sigma$ where small $h$ is the impulse response of $H$. When $h \in \mathcal{L}_1$, i.e: 
+
+\begin{equation}
+ \bigg ( \int \rvert h(\sigma) \rvert^1 d\sigma \bigg)^{\frac{1}{1}} < \infty	
+\end{equation}
+
+Where the internal induced norm is from the norm on $\mathcal{R}^m$ and norm on $\mathcal{R}^p$. Then there exists $\gamma < \infty$ such that 
+
+\begin{equation}
+ \norm{y}_{\mathcal{L}_{pe}} \leq \gamma \norm{u}_{\mathcal{L}_{pe}}, \quad \forall u \in  	\mathcal{L}_{pe}, \quad 1\leq p \leq \infty
+\end{equation}
+
+
+
+\textbf{Interconnected Systems $\rightarrow$ Small Gain Theorem:} For two systems $S_1$ and $S_2$
+
+Shit is on paper.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
