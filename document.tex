@@ -236,7 +236,7 @@ We have the points such that $x_2^\star = x_2^\star = 0$ as equilibria, we get t
 
 For when $a = \frac{1}{2}\quad b=3$, we have that $x_1^\star = -0.25 \quad x_2^\star = 0.166$ we have that $\lambda _1 = 1.29 \quad \lambda_2 = -0.129$. This is a saddle point.
 
-Talks about semi-stable equilibrium, where approaching the point from one side is "stable" but from the other is "unstable." In this prior example, there is an unstable manifold between two points leadin back into a stable manifold. Linearization does not preserve the nonlinear behaviour. This happens when eigenvalues are zero! Homoclinic orbit because it revisits the same equilibrium point.
+Talks about semi-stable equilibrium, where approaching the point from one side is "stable" but from the other is "unstable." In this prior example, there is an unstable manifold between two points leading back into a stable manifold. Linearization does not preserve the nonlinear behaviour. This happens when eigenvalues are zero! Homoclinic orbit because it revisits the same equilibrium point.
 
 For the case that:
 
@@ -317,18 +317,18 @@ There is no equilibrium at the origin in this case. Plotting this in 3D shows a 
 
 \section*{January 31st} % (fold)
 \label{sec:jan31}
-Properties of NL ODEs: (1) solutions may not exist starting from some initial conditions. Example given: $\dot{x}=-x^{\frac{1}{2}}$, which is not defined on the vector field function plot for x values below 0 because it is complex. Another is $\dot{x} = -sgn(x)$. The phase plane plot is discontinuous at zero, and therefore not defined at zero. This function is not a continuously differentiable $C^1$ solution. It is however a $C^0$ solution. 
+\textbf{Properties of NL ODEs: (1)} solutions may not exist starting from some initial conditions. Example given: $\dot{x}=-x^{\frac{1}{2}}$, which is not defined on the vector field function plot for x values below 0 because it is complex. Another is $\dot{x} = -sgn(x)$. The phase plane plot is discontinuous at zero, and therefore not defined at zero. This function is not a continuously differentiable $C^1$ solution. It is however a $C^0$ solution. 
 
-Peano's theorem: if $f(x)$ is continuous at some $x_0$, then there exists at least one $C^1$ solution $x(t)$ to $\dot{x}=f(x)$ passing through $x_0$. There also might be other solutions starting from that point.
+\textbf{Peano's theorem:} if $f(x)$ is continuous at some $x_0$, then there exists at least one $C^1$ solution $x(t)$ to $\dot{x}=f(x)$ passing through $x_0$. There also might be other solutions starting from that point.
 
-Properties of NL ODEs: (2) solutions starting from some $x_0$ may not be unique. Example given: $\dot{x} = \mid x \mid^{\frac{1}{2}}$; solutions here are that $x(t) = \frac{1}{4}t^2,\quad 0$. This function is not continuously differentiable.  THM: if f(x) satisfies the Lipschitz condition $\mid f(x_1) - f(x_2)\mid < k\mid x_1 - x_2 \mid \quad \forall x_1,x_2$
+\textbf{Properties of NL ODEs: (2)} solutions starting from some $x_0$ may not be unique. Example given: $\dot{x} = \mid x \mid^{\frac{1}{2}}$; solutions here are that $x(t) = \frac{1}{4}t^2,\quad 0$. This function is not continuously differentiable.  THM: if f(x) satisfies the Lipschitz condition $\mid f(x_1) - f(x_2)\mid < k\mid x_1 - x_2 \mid \quad \forall x_1,x_2$
 in the neighborhood of $x_0$, then $\dot{x} = f(x), \quad x(t_0) = x_0$ has a unique solution $x(t)$ passing through $x_0$ for t defined on a neighborhood of $t_0$. Basically around these initial state and time conditions, the system can go forward and backward smoothly. This is a stronger form of continuity. However, this allows some strange functions to be considered continuous that can be nasty. Example given $\sin(\frac{1}{x})$ which oscillates faster and faster towards the zero value. This is not uniformly continuously differentiable, but it is Lipschitz because it abides by the gain boundary.
 
 What if the RHS is not Lipschitz continuous? What can we say about the solutions? You can still have unique solutions but is not Lipschitz continuous. It only goes  one way.
 
-Properties of NL ODEs: (3) solutions may not exist for all time. Example given: $\dot{x} = 1+x^2$. Here the $k$ values for the neighborhood of the chosen $x_0$ will be different over the function. But this is still Lipschitz continuous. NOT uniformly Lipschitz continuous. A solution to this is $x(t)=\tan(t)$, which escapes in finite time. 
+\textbf{Properties of NL ODEs: (3)} solutions may not exist for all time. Example given: $\dot{x} = 1+x^2$. Here the $k$ values for the neighborhood of the chosen $x_0$ will be different over the function. But this is still Lipschitz continuous. NOT uniformly Lipschitz continuous. A solution to this is $x(t)=\tan(t)$, which escapes in finite time. 
 
-Thm 3.2 in Khalil: if f(x) is uniformly Lipschitz continuous, the solution exists $\forall t$. This uniformly assumption means the same k holds $\forall x \in \mathcal{R}^n$. This prevents the finite time escape issues, if that is actually an issue.
+\textbf{Theorem 3.2 in Khalil:} if f(x) is uniformly Lipschitz continuous, the solution exists $\forall t$. This uniformly assumption means the same k holds $\forall x \in \mathcal{R}^n$. This prevents the finite time escape issues, if that is actually an issue.
 
 $f(x) \quad C^0 \Leftarrow$ Locally Lipschitz continuous $\Leftarrow$ uniformly Lipschitz is stronger. $C^1$ is stronger than Locally Lipschitz and implies locally Lipschitz. So $C^1 \Leftarrow$ uniformly $C^1$. A convex function has an unbounded slope, so is not technically $C^1$. See hand written notes for this to be clearer.
 
@@ -831,19 +831,57 @@ The rest of the stuff is on the paper.
 
 
 
+\section*{\textbf{March 14: Small Gain Theorem}}
+
+From the paper we know that, dropping the $\mathcal{L}_{pe}$s:
+\begin{align}
+ \norm{y_1} & \leq \gamma_1 ( \norm{u_1} + \norm{u_2} ) + \beta_1 \\
+ 			& \leq \gamma_1 \norm{u_1} + \gamma_1 \gamma_2 \norm{u_2} + \gamma_1 \gamma_2 \norm{y_1} + \gamma_1 \beta_2 + \beta_1
+\end{align}
+
+and similarly: 
+
+\begin{align}
+ \norm{y_2} & \leq \gamma_2 ( \norm{u_2} + \norm{u_1} ) + \beta_2 \\
+ 			& \leq \gamma_2 \norm{u_2} + \gamma_1 \gamma_2 \norm{u_1} + \gamma_1 \gamma_2 \norm{y_2} + \gamma_2 \beta_1 + \beta_2
+\end{align}
+
+Therefore, from what we said previously we can bound y as such:
+
+\begin{equation}
+	\norm{y} \leq \norm{ [ y_1 \  0 ]^T} + \norm{ [ 0 \  y_2 ]^T} 
+\end{equation}
+
+Which, for Euclidean norm, collapses to
+
+\begin{equation}
+	\norm{y} \leq \norm{ y_1 } + \norm{y_2} 
+\end{equation}
+
+We can simplify what we had before with the following: 
 
 
+\begin{align}
+& \norm{y_1} \leq \frac{\gamma_1}{1-\gamma_1\gamma_2}\norm{u_1} + \frac{\gamma_1\gamma_2}{1-\gamma_1\gamma_2}\norm{u_2} + \frac{\gamma_1 \beta_2 + \beta_1}{1-\gamma_1\gamma_2} \\
+& \norm{y_2} \leq \frac{\gamma_2}{1-\gamma_1\gamma_2}\norm{u_2} + \frac{\gamma_1\gamma_2}{1-\gamma_1\gamma_2}\norm{u_1} + \frac{\gamma_2 \beta_1 + \beta_2}{1-\gamma_1\gamma_2}
+\end{align}
 
+Therefore in total we have that: 
 
+\begin{equation}
+	\norm{y} \leq \frac{\gamma_1}{1-\gamma_1\gamma_2}(\norm{u_1} + \gamma_2 \norm{u_1}) + \frac{\gamma_2}{1-\gamma_1\gamma_2}(\gamma_1\norm{u_2} + \norm{u_2} ) + (...) + (...)
+\end{equation}
 
+The $(...)$ terms are $\beta$ terms. However we want it in form $\leq \gamma\norm{u} + \beta$. Therefore we must continue to work on this.
 
+We shall pull the same trick with the norm of the input vector by using the triangle inequality and splitting up the norm into elements. Also use the trick that $\norm{u} \geq \norm{u_1}$ and $\norm{u} \geq \norm{u_2}$  So, we have that then:
 
+\begin{align}
+	\norm{y} & \leq (...) + (...) + \frac{\gamma_1 +\gamma_1\gamma_2}{1-\gamma_1\gamma_2}\norm{u} + \frac{\gamma_2 +\gamma_1\gamma_2}{1-\gamma_1\gamma_2}\norm{u} \\
+	& \leq \gamma \norm{u} + \beta
+\end{align}
 
-
-
-
-
-
+As a result it must be that $\gamma_1 \gamma_2 < 1$.
 
 
 
