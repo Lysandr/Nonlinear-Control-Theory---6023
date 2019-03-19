@@ -888,13 +888,77 @@ As a result it must be that $\gamma_1 \gamma_2 < 1$.
 
 
 
+\section*{March 19th: Passivity}
+This method of passivity explicitly allows large gains while focusing on the phase.
+
+We look at the passivity block diagram which has a through variable and an across variable.  For a mechanical system the through variable is a force or torque. The across variable is typically velocity or displacement. Power supplied to the system from the outside world is :
+\begin{equation}
+P(t) = T(t)A(t)
+\end{equation}
+The energy supplied is the time integral of this function.
+
+\begin{equation}
+E(t) = \int_0^t T(\tau)A(\tau) d\tau
+\end{equation}
+
+The dynamics dissipate energy. Overall the integral will be increasing and we consider it to be dissipative. Lossless energy transfer is if there is no dissipation whatsoever; manifests itself in a sinusoid.
+
+If we substitude T with u and A with y in the block diagram form we get that the energy supplied to the system is as such:
+ 
+ \begin{equation}
+E(t) = \int_0^t u(\tau)y(\tau) d\tau
+\end{equation}
+
+This is passive in a sense if this integral $E(t) \geq \beta, \ \forall u, \ \forall y, \ \forall t$. We cann extend this to multivariable cases. This integrand depends on purely $u(t)$. So it seems that the two important parts are $u(t)$ and the system itself. But it must work $\forall u$. So passivity is purely a system property and how the systemr responds to these inputs.
+
+Basically the idea is that there is a lower finite bound $\beta$ that shows that the system cannot generate more energy than this. This energy is actually dependant upon input/output phase. If you're entirely out of phase, then you're technically generating energy and the integral will go negative. So this is a figure of phase essentially.
+
+But make sure the thing you're integrating is actually energy, sometimes it can be abstract and lead you down the wrong path.
+ 
+For multivariate systems we have that:
+
+ \begin{equation}
+E(t) = \int_0^t u(\tau)^Ty(\tau) d\tau \geq \beta, \ \forall u, \ \forall t
+\end{equation}
+
+We see that in the vector sense, u and y can be at most 90 degrees away. It appears to be an angled characterization now between input and output. What if the output is a different size? Well, you're out of luck. Passivity approaches generally don't work. You can be clever though in some cases.
+
+\subsection*{Passivity Examples}
+Mechanical damper: for damping coefficient B
+
+\begin{equation}
+	E(t) = \int_0^t f v d\tau = B \int_0^t v^2 d\tau \geq 0, \forall t
+\end{equation}
+So clearly this is just a dissipative element and never produces energy.
+ check paper.
+
+
+\subsection*{Passivity Maps}
+ For a nondynamic memoryless block.  check paper.
 
 
 
+ The book Uses the differential formulation for the passivity argument:
+
+\begin{equation}
+ 	u^T(t)y(t) \geq \dot{V}
+\end{equation}
+This V function is called a storage function, and intuitively is energy in most situations.
+
+For passivity maps it is is such that $u^T(t)y(t), \ \forall u, \ \forall t$. This agrees with our argument that you should stay out of the 2nd and 4th quadrants.
 
 
+\subsection*{Why are we doing this crap?} % (fold)
+\label{sub:why_are_we_doing_this_crap_}
+It is used in conjunction with small gain theorem. Suppose that $\mathcal{S}_1$ and $\mathcal{S}_2$ are passive. Then $e_1^Ty_1 \geq \dot{v}_1,\ \forall e_1,t$. Simmilarly $e_2^Ty_2 \geq \dot{v}_2,\ \forall e_2,t$. If we want to say the close loop is passive then we must use the multivariate argument $u = [u_1 \ \ u_2]^T$ and $y = [y_1 \ \ y_2]^T$ so closed loop must ask the question if $u^Ty \geq \dot{v}, \ \forall u,t$.
 
+\begin{align}
+	u^Ty &= e_1^Ty_1 + e_2^Ty_2
+\end{align}
 
+Knowing that $e_1 = u_1 - y_2$ and that $e_2 = u_2 + y_1$. And this summation is $\geq \dot{v}_1 + \dot{v}_2$. Therefore passivity is preserved in feedback systems.
+
+% subsection why_are_we_doing_this_crap_ (end)
 
 
 
