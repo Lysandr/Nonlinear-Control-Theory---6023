@@ -1005,6 +1005,121 @@ Looking at his drawing of sectorized passivity: to be passive means $\Rightarrow
 
 
 
+\section*{April 2nd: More on Passivity}
+After passivity, towards the end of the course, we will cover feedback linearization as well as describing functions.
+
+Recall that wee spoke about total passivity as well as subsystem passivity sharing. We also spoke about sector bounds for describing passive systems.
+
+\textbf{Passivity of Dynamical Systems: } Previously we studied the passivity of a spring system with forces on either end. Now let us add a damper to the system according to our diagram. Therefore the dynamics are described by $f = f_k + f_b = l(l-l_0) + B\dot{l}$.
+
+ We can describe this as a block diagram with input $\dot{l}$ and output $f$ therefore we have that $x = l-l_0$, $\dot{x} = \dot{l} = u$ and $y = f = kx + Bu$. The energy integral is as follows:
+
+ \begin{align}
+ 	E(t) &= \int_0^t u(\tau)y(\tau) d\tau \\
+ 	&= \int_0^t u(\tau)(kx + Bu)d\tau \\
+ 	&= \int_0^t \dot{x}(\tau)kx(\tau)d\tau + B\int_0^t u^2(\tau)d\tau
+ \end{align}
+
+ We can see that the antiderivative of the integrand follows such that 
+
+ \begin{align}
+ 	E(t) &= \frac{k}{2} \int_0^t \frac{d}{d\tau}x^2(\tau)d\tau + B\int_0^t u^2(\tau)d\tau \\ 
+ 	&= \frac{k}{2}(x^2(t) - x^2(0)) + B\int_0^t u^2(\tau)d\tau 
+ \end{align}
+
+ We see that there exists a lower bound and can write that
+
+ \begin{equation}
+ 	 \frac{k}{2}(x^2(t) - x^2(0)) + B\int_0^t u^2(\tau)d\tau \geq \frac{k}{2}(x^2(t) - x^2(0))
+ \end{equation}
+
+ We see that the second term adds energy and is a dissipative term. Now energy can be stored but, overall it is still passive.
+
+ Now let $V(x) = \frac{k}{2}x^2$, we can have that $E(t) = V(x(t)) - V(x_0) + B\int_0^t u^2(\tau)d\tau $. Differentiating with respect to time we have that $\dot{E}(t) = u(t)y(t) = \dot{V} + Bu^2(t) \geq \dot{V} $. Again this is more than passive. We see that $uy -Bu^2 \geq \dot{V}$ where the second term is considered excess passivity. V is the storage function.
+
+ Previously we discussed a system with no storage and excess passivity called input strictly passive: $uy - \epsilon u^2 \geq 0$. Therefore our system is considered input strictly passive. So damping gives us passivity and dissipation!
+
+Now what if we have something more complicated? Can we do this in a more general way? In the case of a linear system, let us try a transfer function approach with impulse response h(t). Let us write the convolution that that
+
+\begin{equation}
+	y(t) = \int_0^t h(t-\tau)u(\tau)d\tau + ICs (\textbf{assumed to be zero})
+\end{equation}
+
+Let us write an energy expression in the frequency domain, with truncation function $\tau$:
+
+\begin{align}
+	E(t) &= \int_o^t u(\tau)y(\tau) d\tau \\
+	&= \int_{-\infty}^\infty u_\tau (\tau) y_\tau (\tau) d\tau
+\end{align}
+
+We do this to get it into a form we are interested in.. he calls this a "mathematical slight of hand." Let us now write this as:
+
+\begin{align}
+	E(t) &= \int_{-\infty}^\infty \hat{u}_\tau^* (j\omega) \hat{y}_\tau (j\omega) d\omega
+\end{align}
+
+This is not obvious at all. By the famous Plancherel (Parseval) theorem, this is known to be true.
+
+Let us recall the fourier transform:
+
+\begin{equation}
+	\hat{u}_\tau (j\omega) = \int_{-\infty}^\infty u_\tau (\tau) e^{-j\omega t} d\omega
+\end{equation}
+
+and of course we know from the definition of a transfer function that 
+
+\begin{equation}
+	\hat{y}_\tau (j\omega) = \hat{h} (j\omega) \hat{u}_\tau (j\omega)
+\end{equation}
+
+Back to the integral, we can then write it as: 
+
+\begin{align}
+	E(t) &= \int_{-\infty}^\infty \hat{u}_\tau^* (j\omega) \hat{h} (j\omega) \hat{u}_\tau (j\omega) d\omega \\
+	& = \int_{-\infty}^\infty  \hat{h} \norm{\hat{u}_\tau}^2 d\omega
+\end{align}
+
+So now the sign entirely depends on the transfer function. We want it to be positive so that we can put a lower bound on the energy.
+
+Represented in by the Laplace transform we have that $\hat{h}(s)$, and require this to be positive in order to input a bounding inequality in our study of the energy function.
+
+We know that the transfer function in the complex plane has conjugate symmetry due to real ODE coefficients. Know that $\hat{h} = (\hat{h}_R + j\hat{h}_I,\ \hat{h}_R - j\hat{h}_I )$. Knowing this, then the integral on the entire domain should cancel all of the imaginary components and yield only the real components. Therefore we can reformulate as such:
+ 
+
+
+
+\begin{align}
+	E(t) & = 2 \int_{0}^\infty  \mathbf{Re} (\hat{h}(j\omega)) \norm{\hat{u}_\tau (j\omega)}^2 d\omega \geq 0 \ \ \iff  \mathbf{Re} (\hat{h}(j\omega)) \geq 0 \ , \forall \omega
+\end{align}
+
+Therefore $\mathbf{Re} (\hat{h}(j\omega))$ must be in the right half of the complex plane! The term that people use is \textbf{positive real transfer function}. If the transfer function is positive real, then it is passive. This is considered a synonym for passivity. So we can immediately state the passivity by looking at the frequency response.
+
+For example, let us state that $h(s) = \frac{a}{s+b} \rightarrow h(j\omega) = \frac{a}{j\omega+b}$. We know the angular displacement on the complex plane to a specific frequency is the phase, and the length to that point is the magnitude. We showed that this low pass filter is a passive system as the real components are always positive.
+
+Now let us consider thee system $h(s) = \frac{a}{s}$. We see that integrator remains on the imaginary axis and is still passive.
+
+Now we consider the system defined by $h(s) = \frac{s+a}{s+b}$. We know that the phase is the most important decider for passivity arguments because we must stay on the left hand side. We know that the total phase can never exceed 90 degrees for these first order systems. Since the real gain goes to unity as $\omega \rightarrow \infty$, it is stronger than passive and is considered strictly positive real (SPR). We can lower bound the real magnitude. This is passive plus dissipation.
+
+So we can then write
+
+
+\begin{align}
+	E(t) & = 2 \int_{0}^\infty  \mathbf{Re} (\hat{h}(j\omega)) \norm{\hat{u}_\tau (j\omega)}^2 d\omega \\
+	& \geq 2\sigma \int_{0}^\infty \norm{\hat{u}_\tau (j\omega)}^2 d\omega \\
+	& = \sigma \int_0^t u^2(\tau)d\tau
+\end{align}
+
+For $\sigma = \mathbf{Re} (\hat{h}(j\omega))$. This is input strictly passive. It has a positive lower bound, so "has more to give and still be passive." This is true for SPR systems.
+
+For second order systems, showing passivity is harder as you must look at the Nyquist plot.
+
+
+
+
+
+
+
+
 
 
 
