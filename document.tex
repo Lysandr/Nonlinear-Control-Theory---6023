@@ -1110,10 +1110,27 @@ For second order systems, showing passivity is harder as you must look at the Ny
 
 \section*{Missed a Class}
 
-\section*{April 9th}
-This class sucks. Two things have occurred: I have learned nearly nothing and was continually frustrated by a complacent professor with reckless notation.
+\section*{April 9th: Absolute stability}
 
+\section*{April 11th: More on Absolute stability}
+We are looking at a loop with an LTI system inside of it. Let us talk about the circle criterion (Thm 7.2 in book).
 
+Let us assume that the LTI portion of the feedback loop is defined by $\dot{x} = Ax + Bu, \ y = Cx + Du$, (with Laplace transform of $G(s)$) and we assume that it is a minimal system meaning that it is fully controllable and observable. Our feedback element $\Psi$ is in a sector bound defined by $[\alpha, \ \beta]$. If all of this is true, then the closed loop is "absolutely stable" if we pass other conditions:
+
+\begin{itemize}
+	\item $0<\alpha<\beta$ and the Nyquist plot of $G(j\omega)$ does not enter the disk $D(\alpha,\beta)$ and encircles it M times counterclockwise when $G(s)$ has M poles in the right half plane. This circle has left intercept of $\frac{-1}{\alpha}$ and right intercept of $\frac{-1}{\beta}$. We cannot enter this circle and have to encircle it the same number of times as we have poles.
+	\item $0 = \alpha < \beta$ which sector bounds our $\Psi$ such that it remains in the first and third quadrant, and G is Hurwitz and the Nyquist plot of $G(j \omega)$ lies to the right of $Re(s) = \frac{-1}{\beta}$. With the left bound being zero, it effectively closes off the entire left half plane beyond the right most bound.	
+	\item $\alpha < 0 < \beta$ gives us a sector bound which allows for some space in all quadrants. If G is Hurwitz and the Nyquist plot of $G(j \omega)$ lies inside the disk $D(\alpha, \beta)$. Therefore you have the disk now moving into the right half plane. The Nyquist plot must be entirely contained by the disk.  In this case it turns out the the system can still be stable under positive feedback coefficients, showing that the LTI system is highly robust.
+\end{itemize}
+
+\section*{Describing Functions}
+I have drawn a loop in my notes. We break a loop and insert a sinusoidal function $A \sin{\omega t}$. We can look at the output of this separation and look the steady state response. In the case where the output $B\sin\sin{\omega t + \phi}$ has $B=A$ and $\phi =0 $ we see that the system is marginally or neutrally stable. You can think of this as if you instantly reconnected the system.
+
+The loop gain $L_g = -GH$ or can view it as $-L_g = GH$ for our Nyquist analysis. We end up starting at -1 on the Nyquist plot, or 180 degree shift. Now if we change this to $-L_g = kGH$? We could scale the system such that it does not go through the critical point. For k constant greater than one, it goes unstable, because it exponentially increases.
+
+The closed loop transfer function described by $\frac{y}{r} = \frac{kG}{1+kGH}$. So when does $GH = \frac{-1}{k}$? Because this is the point of instability. This is our new critical point.
+
+With nonlinear systems with weak nonlinearities, we can attribute describing functions to specific frequencies. But again with leakage into other frequencies, it is not necessarily a rigorous approach.
 
 
 
