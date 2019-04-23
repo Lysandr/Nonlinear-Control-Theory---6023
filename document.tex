@@ -1134,8 +1134,51 @@ With nonlinear systems with weak nonlinearities, we can attribute describing fun
 
 
 
+\section*{April 22nd: Finding the Describing Function}
+Let us recall that we would insert a sinusoidal function into a nonlinearity. We see the spectrum of the output, and can selectively generate an approximate function that describes the dominant frequency.
 
+How do we find this exactly? We must also remember there exists a transient. This decays, leaving the steady state, given the function is stable.
 
+We can describe the steady state output as such
+
+\begin{equation}
+	y_{ss} = \hat{C}_0  + \sum_{k = -\infty}^{\infty} \hat{C}_k e^{j (\omega k) t}
+\end{equation}
+
+Where $\omega$ is the fundamental while $\omega k$ is the harmonic frequency. The spectral distribution amplitude is denoted with $\hat{C}_k$. It is defined by
+
+\begin{equation}
+	\hat{C}_k = \frac{1}{T} \int_0^T y_{ss}(t)e^{-j(\omega k)t} dt
+\end{equation}
+
+Now we must substitute $y_{ss}(t)$ can carry out the integration. We want to find the ratio of the input and output spectral amplitudes. We can describe the input as such:
+
+\begin{align}
+	u(t) &= a\sin(\omega t) = \frac{a (e^{j \omega t}- e^{-j \omega t})}{2j} \\
+	&= \hat{a}_0 + \sum_{k = - \infty}^\infty \hat{a}_k e^{j (\omega k) t}
+\end{align}
+
+In the case where $\hat{a}_0 = 0$ we see that $\hat{a}_1 = \frac{a}{2j}$. In our example suppose the nonlinearity is $\psi(u) = y_{ss}$. Lets take the case of a saturation nonlinearity (drawn on paper). The saturation points on the output vs input plot are at $+\delta, \ -\delta$. For $\lvert u \rvert < \delta \rightarrow y = ku$ and we are ok, and the output stays sinusoidal. When $\lvert u \rvert > \delta$ so we get clipping on the output waveform. The amplitude of the first harmonic can be approximated by a slightly smaller sinusoidal function. 
+
+We can state that $\lvert \hat{C}_1 \rvert < k$. The first harmonic will not change as the input grows. Our describing function is $\Psi = \frac{\hat{C}_1}{\hat{a}_1}$ which is the ratio of amplitudes as a gain. Linear plot of the relationship on paper. Typically these describing functions are precomputed and are in tables in the older texts.
+
+The ratio:
+\begin{align}
+	\Psi &= \frac{\hat{C}_1}{\hat{a}_1} = \frac{2j}{a} \frac{\omega}{2\pi}\int_0^T \psi(a\sin(\omega t)) e^{-j(k\omega)t} dt \\ 
+	&= \frac{2j}{a} \frac{\omega}{2\pi}\int_0^T \psi(a\sin(\omega t)) (cos(\omega t) - j\sin(\omega t)) dt
+\end{align}
+
+The cosine portion averages to zero of the integral but the $\sin^2$ term does not leaving us with the following:
+
+\begin{align}
+	\Psi &= \frac{-2j^2}{a} \frac{\omega}{2\pi}\int_0^T \psi(a\sin(\omega t))\sin(\omega t) dt \\
+	&= \frac{1}{a \pi} \int_0^{2\pi} \psi(a\sin(\theta))\sin(\theta) d\theta \\
+	& = \frac{2}{a \pi} \int_0^{\pi} \psi(a\sin(\theta))\sin(\theta) d\theta
+\end{align}
+
+We see this is not dependent upon time.
+ 
+NOTE: read book for more information on $\psi$. Lowercase is the nonlinearity, uppercase is  the describing function.
 
 
 
