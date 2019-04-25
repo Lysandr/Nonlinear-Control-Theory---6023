@@ -1184,15 +1184,73 @@ NOTE: read book for more information on $\psi$. Lowercase is the nonlinearity, u
 
 
 
+\section*{April 25th, 2019: Feedback Linearization}
+Robot manipulator example, with joint deflections $q \in \mathbb{R}^n$, where $n$ is usually 6 for three positional and attitude DOF. We can get them into this form:
 
+\begin{equation}
+	H(q)\ddot{q} +  S(q,\dot{q})\dot{q} + g(q) = \tau
+\end{equation}
 
+All of the elements in this equation are torques, with $\tau$ representing joint torques. We see immediately that $H(q)$ is the inertial torque, and that $S(q,\dot{q})$ is a damping kind of torque and other stuff. This second portion includes Coriolis gyroscope, damping, and centripetal type torques. 
 
+How do we generate a control torque which linearizes the dynamics? First we must find a way to linearize the dynamics and then make sure it tracks our control references.
 
+Suppose $\tau = H(q)v + S(q,\dot{q})\dot{q} + g(q)$. Plugging in we have that, assuming that $H(q)^{-1}$ exists $\forall \ q$:
 
+\begin{equation}
+	H(q)(\ddot{q} - v) = 0
+\end{equation}
 
+In this case we have that $\ddot{q} = v$ in the nontrivial case. We can see the system as v being double integrated to get $q$. This double integrator is a linear, decoupled, second-order system. Given that it is decoupled, it is a stackup of individual differential equations. There are no zeros, as it looks like $\frac{1}{s^2}$. So now let us do some control design to make this thing track a reference $q_r$.
 
+This could be $v = K_p (q_r - q) - K_d\dot{q}$. However, the dynamics are very complicated and it is very hard to implement. Most people would not implement this, as the cancellation terms are very difficult to calculate with the complicated dynamics. In most scenarios the middle term has small Coriolis and gyroscopic forces. Additionally, with large gear ratios, the gravity backdrive ends up being very small. The inertia terms dominate by far. The $H$ matrix ends up being almost diagonal. Most people ended up only implementing a PD controller at each joint with high gains. 
 
+If we crank out the linearization it ends up looking roughly like:
 
+\begin{equation}
+	M\ddot{q} + B\dot{q} + Kq = \tau
+\end{equation}
+
+For matrices M, B, and K. The decoupled case ends up being approximately:
+
+\begin{align}
+	& m_i \ddot{q}_i + b_i \dot{q}_i + k_i q = \tau_i \\
+	& m_i \ddot{q}_i  = \tau_i -b_i \dot{q}_i - k_i q
+\end{align}
+
+With the transfer function being:
+
+\begin{equation}
+	\frac{q_i(s)}{\tau_i(s)} = \frac{1}{m_i s^2 + b_i s + k_i}
+\end{equation}
+
+The block diagram is written on paper. We see that $q_i$ is related to $\tau_i$ through a double integrator process. He says that $q_i$ is "two integrators away" from $\tau_i$, independent of the feedback.
+
+Now, as shown on paper, the feedback linearization function effectively becomes the new dynamics function. We add another feedback loop to add more zeros to the system. We use our own feedback to cancel the internal feedback! Interesting to note what is written on paper.
+
+Now let us try to add zeros to the reduced chain of integrators. We have the standard $y(s) = H(s)u(s)=  \frac{N(s)}{D(s)}u(s)$ with denominator of order m and denominator of order n. It must be proper to be realizable, therefore $m \leq n$. We also have the idea of relative degree where $p = n-m$. Proper for $p=0$ and strictly proper for $p>0$. Obviously the relative degree of the chain of integrators was 2.
+
+Ideally we add feedback such that we reduce it to chain of integrators.
+
+Now we describe the system with $D(s)y(s) = N(s)u(s)$. So if we could divide N into D, we get a quotient and a remainder. Therefore $D(s) = N(s)Q(s) + R(s)$ with $deg(Q(s)) = p$ and with $deg(R(s)) < deg(N)$.
+
+We now have that $(NQ + R)y = Nu $ which is manipulated to 
+
+\begin{align}
+	NQy &= Nu - Ry \\ 
+	Qy &= u - \frac{R}{N}y
+\end{align}
+
+This block diagram, on paper, is now our $H(s)$ which is an integrator with internal feedback. We can cancel this internal feedback. It becomes a reduced order system as we have lost some of the poles. If we look at the new transfer function we have that
+
+\begin{align}
+	\frac{y}{r} &= \frac{\frac{N}{D}}{1-(\frac{R}{N}\frac{N}{D})} \\ 
+	&=\frac{N}{D-R} \\
+	&= \frac{N}{(NQ+R) -R} \\
+	& = \frac{1}{Q}
+\end{align}
+
+However, it is hard to cancel N exactly if you do not have the perfect model. So if there is an unstable zero, it could not cancel perfectly. We must show that the $\mathbb{Re}(\lambda_i(N(s))) < 0$. Another way to say this is that $H(s)$ is minimum phase (zeros are strictly left hand plane) or "zero dynamics of H are stable."
 
 
 
