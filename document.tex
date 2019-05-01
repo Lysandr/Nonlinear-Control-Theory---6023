@@ -1256,6 +1256,180 @@ However, it is hard to cancel N exactly if you do not have the perfect model. So
 
 
 
+\section*{April 30th, 2019: More on Feedback Linearization}
+
+Recall that we were left with a chain of integrators with our new defined input as $z$. Our system is described by, using the polynomial division version of the block diagram:
+
+\begin{equation}
+	e(t) = q_p \frac{d^p y(t)}{dt^p} + ... + q_0 y(t)
+\end{equation}
+
+We would like to make a state space model (book usees $\xi$). We have that $\xi_1 = y$, $\xi_2 = \dot{\xi}_1$, and they continue to successive derivatives such that $\xi_p = \dot{\xi}_{p-1} = \frac{d^{p-1} y(t)}{dt^{p-1}}$ and therefore $\dot{\xi}_p = \frac{d^p y(t)}{dt^p} = \frac{1}{q_p}e(t) - \frac{q_{p-1}}{q_p}\xi_p - ... - \frac{q_0}{q_p}\xi_{p-1}$.
+
+So we can describe it as such: $\dot{\xi} = A\xi + Be$ with output equation $y = C\xi$. We see that, with our definition, A is a companion matrix form which has mostly entries of 1 that are off diagonal. The bottom row is all of the constants $q$ that we described in the previous paragraph. If, with feedback, we cancel all of the elements on the bottom row and make this a chain of integrators, then all eigenvalues are at the origin: $A_c + B_c \lambda^T$ for $\lambda^T = [\frac{-q_o}{q_p} \ ... \ \frac{-q_{p-1}}{q_p}]$.
+
+We can then describe a minimal realization of the bottom portion of the block diagram $\frac{R}{N}$.
+
+\begin{align}
+	\dot{\eta} = A_0 \eta + B_0 y \\
+	w = C_0 y
+\end{align}
+
+This is the state space representation of this lower block system. We can stack this up like the following (Normal form):
+
+\begin{equation}
+	\begin{bmatrix}
+	\dot{\xi} \\
+	\dot{\eta}
+	\end{bmatrix} = 
+	\begin{bmatrix}
+	A_c + B_c \lambda^T & \frac{B_cC_0}{q_p}\\
+	B_0C_c & A_0
+	\end{bmatrix}
+	\begin{bmatrix}
+	\xi \\
+	\eta
+	\end{bmatrix} + 
+	\begin{bmatrix}
+	B_c \\
+	0
+	\end{bmatrix}
+	\frac{1}{q_p}u
+\end{equation}
+
+
+\begin{equation}
+	y = \begin{bmatrix}
+		C_c & 0
+	\end{bmatrix}
+	\begin{bmatrix}
+		\xi \\ \eta
+	\end{bmatrix}
+\end{equation}
+
+
+We then have that 
+
+\begin{equation}
+	\dot{\xi} = (A_c + B_c \lambda^T) \xi + \frac{B_cC_0}{q_0} \eta + B_c\frac{1}{q_p}u
+\end{equation}
+
+We can choose that 
+
+\begin{equation}
+	u = q_p(-\lambda^T \xi + \frac{1}{q_p}C_0\eta +v)
+\end{equation}
+
+We then have that 
+
+\begin{align}
+	\dot{\xi} &= A_c \xi + B_c v \\
+	y &= C\xi \\
+	\dot{\eta} &= B_0C_c\eta + A_0\eta 
+\end{align}
+
+Which is a chain of p integrators. This feedback results in a system that appears as:
+
+
+\begin{equation}
+	\begin{bmatrix}
+	\dot{\xi} \\
+	\dot{\eta}
+	\end{bmatrix} = 
+	\begin{bmatrix}
+	A_c & 0\\
+	B_0C_c & A_0
+	\end{bmatrix}
+	\begin{bmatrix}
+	\xi \\
+	\eta
+	\end{bmatrix} + 
+	\begin{bmatrix}
+	B_c \\
+	0
+	\end{bmatrix}
+	v
+\end{equation}
+
+\begin{equation}
+	y = \begin{bmatrix}
+		C_c & 0
+	\end{bmatrix}
+	\begin{bmatrix}
+		\xi \\ \eta
+	\end{bmatrix}
+\end{equation}
+
+Which is upper triangular and there is a one way dependence. This matrix is companion form and this is a chain of integrators. Ideally we would like to take a nonlinear system and put it into normal form. If we can, then we can do state variable feedback and cancel elements to make a chain of integrators to which we could add linear control design.
+
+So what does it take to get a nonlinear system into a form like this? Suppose, as a special case, we have the system in the form $\dot{x} = f(x) + g(x)u$ called the separable form. Now usually it is like $\dot{x} = f(x,u)$, so this is special. Of course we just say that $y = h(x)$. We assume that $f(x), g(x), h(x)$ are smooth: smooth enough to take the number of derivatives required for the theory. We perform a change of variables, as a general transformation:
+
+\begin{equation}
+	z = T(x) = \begin{bmatrix}
+		\eta \\
+		\xi
+	\end{bmatrix} = \begin{bmatrix}
+		\phi_1(x) \\
+		\phi_2(x) \\
+		\vdots \\
+		\phi_{n-p}(x) \\
+		---\\
+		\vdots
+	\end{bmatrix}
+\end{equation}
+
+This needs to be a smooth homeomorphism (diffeomorphism): an invertible mapping that is smooth. Basically we aim to make the $\eta$ states as unobservable on the output. Therefore we need that
+
+\begin{equation}
+	\dot{\eta} = \frac{d}{dt} \phi(x) = \frac{\partial \phi}{\partial x} \dot{x} = \frac{\partial \phi}{\partial x}(f(x) + g(x)u)
+\end{equation}
+
+We need to choose $\phi(x)$ such that the projection: $\frac{\partial \phi}{\partial x} \cdot g(x) = \bar{0}$. This is not necessarily easy to find this function.
+
+Now we can construct the $\xi$ portion:
+
+\begin{equation}
+	z = T(x) = \begin{bmatrix}
+		\eta \\
+		\xi
+	\end{bmatrix} = \begin{bmatrix}
+		\phi_1(x) \\
+		\phi_2(x) \\
+		\vdots \\
+		\phi_{n-p}(x) \\
+		y = h(x) \\
+		\dot{\xi}_1 = \frac{d}{dt}(h(x)) = \frac{\partial h}{\partial x}(f(x) + g(x)u) \\
+		\dot{\xi}_2 = \frac{d}{dt}(\frac{\partial h}{\partial x}f(x))  = \frac{\partial}{\partial x}(\frac{\partial h}{\partial x}f(x)) \\
+		\vdots \\
+		\dot{\xi}_p = -\delta(x) + \gamma(x)u
+	\end{bmatrix}
+\end{equation}
+
+To get $u$ to appear here, the derivative must exceed the relative degree of the system. Therefore the dimensionality of the bottom half of this vector is $p$. Notice how I drop the input multiplication in subsequent steps. The input only shows up on the last step. The bottom row is kind of like the companion form chain of integrators. Then the idea is to use $u$ to get rid of the $\delta$ term. 
+
+We can write:
+
+\begin{equation}
+	\dot{\xi}_p = -\delta(x) + \gamma(x)u = \gamma(x) \Bigg(u - \frac{\delta(x)}{\gamma (x)} \Bigg) = \gamma(x) (u - \alpha{x}) 
+\end{equation}
+
+We choose that $u = \alpha(x) + \frac{1}{\gamma(x)}$ such that $\dot{\xi}_p = v$. This is a linear chain of integrators. THM 13.1 in the book shows why this is true.
+
+By THM 13.1, such a $T(x)$ always exists with the assumptions of smoothness on some domain D (also must be that $\gamma(x)$ does not go singular) about an x of interest.
+
+Also, he missed the definition of normal form:
+\begin{align}
+	\dot{\eta} &= f(\eta,\xi) \\
+	\dot{\xi} &= A_x\xi + B_c\gamma(x)(u-\alpha(x))\\
+	y &= C_0\xi 
+\end{align}
+
+And now we see that $\eta$ is internal and do not appear in the input output map. 
+
+Bad things will happen if some of your internal states are blowing up - basically you must know that your internal states are stable. This was an initial assumption. So we must have that $\dot{\eta} = f(\eta,0)$ is asymptotically stable or minimum phase ``zero dynamics are stable."
+
+
+
 
 \bibliographystyle{plainnat}
 \clearpage
