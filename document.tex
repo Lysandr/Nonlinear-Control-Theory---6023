@@ -557,13 +557,13 @@ EG: $V(x) = \frac{x_1^2}{1+x_1^2}+x_2^2$. For global asymptotic stability, the l
 \section*{February 19th}
 On global asymptotic stability (GAS): last time we stated that we can look at the Lyapunov level sets. If we can show that the derivative of V is ND, then it is definitely entering the set, and being attracted to the equilibrium. For local asymptotic stability, $V(x)$ is PD on D and $\dot{V}(x)$ is ND on D.
 
-From  diagrams: essentially we want to make sure that our Lyapunov function is stricly increasing and has no minima or maxima. If $\dot{V}(x)$ is ND $\in \mathcal{R}$, then $V(x) \rightarrow 0$. This also implies that $x\rightarrow 0$ as the PD function $V(x)$ only has a zero point at the origin. This is GAS.
+From  diagrams: essentially we want to make sure that our Lyapunov function is strictly increasing and has no minima or maxima. If $\dot{V}(x)$ is ND $\in \mathcal{R}$, then $V(x) \rightarrow 0$. This also implies that $x\rightarrow 0$ as the PD function $V(x)$ only has a zero point at the origin. This is GAS.
 
 EG: for a function $g:[0,a)\rightarrow [0,\infty)$ where $a$ could be finite or infinite, with $g(0) = 0$ and strictly increasing on $[0,a)$, then function $g$ is said to be "class K." 
 
 If $\dot{x} = f(x)$ for $f:\mathcal{R} \rightarrow \mathcal{R}$ and $V(\rvert x \rvert)$ is class K with $a = \infty$ and $\dot{V}(x)$ is ND on $\mathcal{R}$. This means that $x=0$ is GAS. This is a scalar vector field; this is not rigorous enough for a higher dimension vector field.
 
-For $f:\mathcal{R}^@ \rightarrow \mathcal{R}^2$, with $V(x): \mathcal{R}^2 \rightarrow \mathcal{R}$ and we have that $V(x) = \frac{x_1^2}{1+x_1^2} + x_2^2$ (as seen in last class). We remember that the level sets about the origin are circular and become ovular as they go out, and asymptoticall become unbounded. Is this class K? It turns out that $V(\norm{x})$ is class K with $a = \infty$. In general it does not work for the multivariate case. The essential problem with this is that some of the level sets are not bounded or closed.
+For $f:\mathcal{R}^@ \rightarrow \mathcal{R}^2$, with $V(x): \mathcal{R}^2 \rightarrow \mathcal{R}$ and we have that $V(x) = \frac{x_1^2}{1+x_1^2} + x_2^2$ (as seen in last class). We remember that the level sets about the origin are circular and become ovular as they go out, and asymptotically become unbounded. Is this class K? It turns out that $V(\norm{x})$ is class K with $a = \infty$. In general it does not work for the multivariate case. The essential problem with this is that some of the level sets are not bounded or closed.
 
 EG: suppose we have $g:[0,a)\rightarrow [0,\infty)$ where $a=\infty$ and $r \rightarrow \infty \Rightarrow g(r) \rightarrow \infty$, then g is called "class $K_\infty$." So if $g(r) = V(\norm{x})$. Our previous example $V(x) = \frac{x_1^2}{1+x_1^2} + x_2^2$ is class K but NOT class $K_\infty$.
 
@@ -576,7 +576,7 @@ Here with diagram we also discuss unstable ISL equilibria and how they help defi
 
 \textbf{Lyapunov Instability: Def:} $\exists \quad \epsilon > 0 $ and (upside down f??) $\forall \delta > 0$ for $\norm{x(0) - \bar{x}} < \delta \Rightarrow \norm{x(t) - \bar{x}} > \epsilon $ for some t.
 
-If V is PD on D (containing $\bar{x}$) and $\dot{V}$ is PD on D $\Rightarrow \bar{x}$ is unstable ISL. The book talks about Chetaev's theorem (4.3) is strronger as it has a weaker condition on $\dot{V}$.
+If V is PD on D (containing $\bar{x}$) and $\dot{V}$ is PD on D $\Rightarrow \bar{x}$ is unstable ISL. The book talks about Chetaev's theorem (4.3) is stronger as it has a weaker condition on $\dot{V}$.
 
 Let us look at a linear system such that $\dot{x} = f(x) =Ax$ with $V(x) = \norm{x}_p = x^TPx$ for $P$ a PD symmetric matrix. And then $\dot{V} = x^TP\dot{x} + \dot{x}^TPx = x^TPAx + x^TA^TPx = -x^TQx$ where the last portion is just a quadratic form where Q is a PD matrix.
 
@@ -1427,6 +1427,34 @@ Also, he missed the definition of normal form:
 And now we see that $\eta$ is internal and do not appear in the input output map. 
 
 Bad things will happen if some of your internal states are blowing up - basically you must know that your internal states are stable. This was an initial assumption. So we must have that $\dot{\eta} = f(\eta,0)$ is asymptotically stable or minimum phase ``zero dynamics are stable."
+
+
+
+
+\section*{May 2nd: Adaptive Control and Exam Questions}
+ALL ON PAPER PLEASE SEE THAT
+
+
+\clearpage
+\section*{EXAM NOTES FROM BOOK AND OTHER SOURCES}
+All of the small gain and passivity approaches are in the input-output stability category. We just relate the output of the model directly to the input. In this section we define $\mathcal{L}$ stability. We shall calculate the $\mathcal{L}_2$ gain for LTI systems and then study a version of the small-gain theorem.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
